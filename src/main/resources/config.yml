@@ -1,0 +1,7 @@
+console_lang: EN_US
+modifiers:
+  fix_explosion: false
+  sand_duping: false
+vote_op_absolute_disagreement: true
+chat_player_fuzzy_matching: true
+chunkforcer:

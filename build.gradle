@@ -1,0 +1,52 @@
+buildscript {
+    repositories {
+        maven { url "https://maven.fabricmc.net/" }
+    }
+}
+
+plugins {
+    id 'java'
+    id 'cn.apisium.papershelled' version '1.0.8'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+def releaseVersion = version = '1.0-RC1'
+
+group 'initauther97'
+
+paperShelled {
+    jarUrl = 'https://papermc.io/api/v2/projects/paper/versions/1.17.1/builds/257/downloads/paper-1.17.1-257.jar'
+    relocateCraftBukkit = true
+}
+
+dependencies {
+    compileOnly paperShelled.jar()
+    compileOnly 'org.ow2.asm:asm:9.2'
+    compileOnly fileTree(dir: 'lib', include: '*.jar')
+}
+
+shadowJar {
+    dependencies {
+        relocate('org.bukkit.craftbukkit', 'org.bukkit.craftbukkit.' + paperShelled.craftBukkitVersion.get())
+    }
+
+    archiveClassifier.set('')
+    minimize()
+
+    filesMatching('Constants.java') {
+        filter { it.replaceAll('RELEASE_VERSION', releaseVersion) }
+    }
+    
+    filesMatching('InfPaper.java') {
+        filter { it.replaceAll('RELEASE_VERSION', releaseVersion) }
+    }
+}
+build.dependsOn(shadowJar)
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}

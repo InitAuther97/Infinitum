@@ -1,0 +1,128 @@
+command.vote.create.success:
+  color: GREEN
+  translate: vote.create.success
+
+command.vote.create.failed:
+  color: RED
+  translate: vote.create.failed
+
+command.vote.create.unknown_vote:
+  color: RED
+  format:
+    raw:
+      translate: command.vote.create.unknown_vote
+    arguments:
+      - argument: 0
+
+command.vote.participate.ended:
+  color: RED
+  translate: vote.participate.ended
+
+command.vote.participate.no_ongoing:
+  color: RED
+  translate: vote.participate.no_ongoing
+
+command.vote.create.already_ongoing: #[vote_uid]
+  color: RED
+  translate: vote.participate.already_ongoing
+  hover_event:
+    action: SHOW_TEXT
+    text:
+      - argument: 0
+
+command.vote.participate.already_voted:
+  color: RED
+  translate: vote.participate.already_voted
+
+command.vote.participate.incorrect_argument:
+  color: RED
+  translate: vote.participate.incorrect_argument
+
+command.vote.participate.oper.accept:
+  color: GREEN
+  translate: vote.participate.oper.accept
+
+command.vote.result.accept: #[vote_id,vote_desc]
+  value:
+    - argument: 0
+      hover_event:
+        action: SHOW_TEXT
+        text:
+          argument: 1
+
+    - translate: vote.result
+
+    - translate: vote.result.type.accept
+      color: GREEN
+
+command.vote.result.reject: #[vote_id,vote_desc]
+  value:
+    - argument: 0
+      hover_event:
+        action: SHOW_TEXT
+        text:
+          argument: 1
+
+    - translate: vote.result
+
+    - translate: vote.result.type.reject
+      color: GREEN
+
+command.vote.info: #[player,vote_id,vote_desc,vote_uid]
+  value:
+    - format:
+        raw:
+          translate: vote.info
+        arguments:
+          - argument: 0
+          - argument: 1
+      hover_event:
+        action: SHOW_TEXT
+        text:
+          argument: 2
+    - translate: vote.info.accept
+      color: GREEN
+      click_event:
+        action: RUN_COMMAND
+        value:
+          format:
+            raw: "/infpaper vote participate %s accept"
+            arguments:
+              - argument: 3
+    - translate: vote.info.reject
+      color: RED
+      click_event:
+        action: RUN_COMMAND
+        value:
+          format:
+            raw: "/infpaper vote participate %s reject"
+            arguments:
+              - argument: 3
+
+command.acknowledge: #[version]
+  value:
+    - format:
+        raw:
+          translate: acknowledge.1
+        arguments:
+          - argument: 0
+    - "\n"
+    - translate: acknowledge.2
+    - "\n"
+    - translate: acknowledge.3
+    - "\n"
+    - translate: acknowledge.4
+
+command.vote.usage: "/aikarisgod vote create/participate ..."
+command.vote.creage.usage: "/aikarisgod vote create <voteid> [duration]"
+command.vote.participate.usage: "/aikarisgod vote participate <voteid> <...>"
+
+command.lang.success:
+  translate: 'lang.success'
+
+command.lang.incorrect_argument: #[input, required]
+  color: RED
+  value:
+    - argument: 0
+    - translate: 'lang.incorrect_argument'
+    - argument: 1
