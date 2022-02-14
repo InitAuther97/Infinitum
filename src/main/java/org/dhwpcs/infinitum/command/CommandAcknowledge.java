@@ -3,9 +3,9 @@ package org.dhwpcs.infinitum.command;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.executors.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.dhwpcs.infinitum.Constants;
+import org.dhwpcs.infinitum.I18n;
+import org.dhwpcs.infinitum.papershelled.Infinitum;
 
-import static org.dhwpcs.infinitum.Constants.TEXTS;
 
 public class CommandAcknowledge implements CommandExecutor {
 
@@ -17,6 +17,6 @@ public class CommandAcknowledge implements CommandExecutor {
 
     @Override
     public void run(CommandSender sender, Object[] objects) {
-        sender.sendMessage(TEXTS.format("command.acknowledge", sender, Constants.getVersion()));
+        I18n.sendMessage("command.acknowledge", sender, Infinitum.version());
     }
 }

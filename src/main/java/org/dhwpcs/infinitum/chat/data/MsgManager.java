@@ -56,9 +56,15 @@ public class MsgManager {
             throw new MessageFailedException(MessageFailedException.Type.CHUNK_NOT_FOUND);
         }
         try {
-            hist.put(ChunkMessage.decode(ByteBuffer.wrap(Files.readAllBytes(file))));
-        } catch (IOException e) {
-            throw new MessageFailedException(e, MessageFailedException.Type.CHUNK_NOT_FOUND);
+            hist.run(it -> ChunkMessage.decode(ByteBuffer.wrap(Files.readAllBytes(file))));
+        } catch (Exception e) {
+            if(e instanceof IOException ex) {
+                throw new MessageFailedException(ex, MessageFailedException.Type.CHUNK_NOT_FOUND);
+            } else if(e instanceof MessageFailedException ex) {
+                throw ex;
+            } else if(e instanceof RuntimeException ex) {
+                throw ex;
+            }
         }
     }
 

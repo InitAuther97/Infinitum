@@ -1,8 +1,8 @@
 package org.dhwpcs.infinitum.voting.entry;
 
-import io.github.initauther97.adventure.text.TextEntry;
-import org.dhwpcs.infinitum.Constants;
-import org.dhwpcs.infinitum.GlobalConfig;
+import io.github.initauther97.ialib.adventure.text.TextEntry;
+import org.dhwpcs.infinitum.I18n;
+import org.dhwpcs.infinitum.Global;
 
 public class VoteEnableSandDuping implements IVoteEntry {
     @Override
@@ -12,11 +12,11 @@ public class VoteEnableSandDuping implements IVoteEntry {
 
     @Override
     public TextEntry getDescription() {
-        return Constants.TEXTS.translate("vote.sand_duping.enable.desc");
+        return I18n.translate("vote.sand_duping.enable.desc");
     }
 
     @Override
     public Runnable succeedAction() {
-        return () -> GlobalConfig.sandDuping = true;
+        return () -> Global.sandDuping = true;
     }
 }

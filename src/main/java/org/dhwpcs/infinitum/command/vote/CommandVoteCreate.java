@@ -6,12 +6,11 @@ import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.executors.PlayerCommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.dhwpcs.infinitum.I18n;
 import org.dhwpcs.infinitum.voting.Vote;
 import org.dhwpcs.infinitum.voting.VoteRequestResult;
 import org.dhwpcs.infinitum.voting.VotingContext;
 import org.dhwpcs.infinitum.voting.callback.IVoteCallback;
-
-import static org.dhwpcs.infinitum.Constants.TEXTS;
 
 public class CommandVoteCreate implements PlayerCommandExecutor {
 
@@ -26,10 +25,6 @@ public class CommandVoteCreate implements PlayerCommandExecutor {
                 .executesPlayer(new CommandVoteCreate());
     }
 
-    static void sendMessage(String entry, CommandSender sender, Object... args) {
-        sender.sendMessage(TEXTS.format(entry, sender, args));
-    }
-
     private static IVoteCallback createVoteEndedTask(CommandSender sender) {
         return (entry, result) -> {
             String ent = switch (result) {
@@ -37,7 +32,7 @@ public class CommandVoteCreate implements PlayerCommandExecutor {
                 case DENY -> "vote.result.reject";
             };
             for (Player player : sender.getServer().getOnlinePlayers()) {
-                sendMessage(ent, player,
+                I18n.sendMessage(ent, player,
                         entry.getEntry().getVoteId(),
                         entry.getEntry().getDescription()
                 );
@@ -51,9 +46,9 @@ public class CommandVoteCreate implements PlayerCommandExecutor {
         switch (result.type()) {
             case SUCCESS -> {
                 Vote vote = (Vote) result.result()[0];
-                sendMessage("vote.create.success", sender);
+                I18n.sendMessage("vote.create.success", sender);
                 for (Player player : sender.getServer().getOnlinePlayers()) {
-                    sendMessage("vote.info", player,
+                    I18n.sendMessage("vote.info", player,
                             sender.getName(),
                             vote.getEntry().getVoteId(),
                             vote.getEntry().getDescription(),
@@ -61,14 +56,14 @@ public class CommandVoteCreate implements PlayerCommandExecutor {
                     );
                 }
             }
-            case INCORRECT_ARGUMENT -> sendMessage("vote.create.incorrect_argument", sender);
+            case INCORRECT_ARGUMENT -> I18n.sendMessage("vote.create.incorrect_argument", sender);
             case ALREADY_ONGOING -> {
                 Vote vte = (Vote) result.result()[0];
-                sendMessage("vote.create.already_ongoing", sender, vte.getUid().toString());
+                I18n.sendMessage("vote.create.already_ongoing", sender, vte.getUid().toString());
             }
             case UNKNOWN_VOTE -> {
                 String id = (String) result.result()[0];
-                sendMessage("vote.create.unknown_vote", sender, id);
+                I18n.sendMessage("vote.create.unknown_vote", sender, id);
             }
         }
     }

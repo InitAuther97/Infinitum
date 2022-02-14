@@ -13,7 +13,10 @@ command.vote.info: "%s正在投票决定%s."
 lang.success: "已改变语言偏好设置."
 lang.incorrect_argument: "不受支持.仅支持以下语言:"
 
-command.acknowledge.1: "InfPaper %s"
+command.acknowledge.1: "Infinitum %s"
 command.acknowledge.2: "灵感来自Tracer"
 command.acknowledge.3: "由InitAuther97制作"
 command.acknowledge.4: "部分修改代码来自Tracer"
+
+chat.reply.reply: "[回复 %s]"
+chat.reply.info: "于%s \\n%s"

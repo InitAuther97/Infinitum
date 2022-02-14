@@ -5,7 +5,7 @@ import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.arguments.UUIDArgument;
 import dev.jorel.commandapi.executors.PlayerCommandExecutor;
 import org.bukkit.entity.Player;
-import org.dhwpcs.infinitum.Constants;
+import org.dhwpcs.infinitum.I18n;
 import org.dhwpcs.infinitum.voting.VoteParticipatingResult;
 import org.dhwpcs.infinitum.voting.VoteType;
 import org.dhwpcs.infinitum.voting.VotingContext;
@@ -33,11 +33,11 @@ public class CommandVoteParticipate implements PlayerCommandExecutor {
         }
         UUID uid = (UUID) args[0];
         VoteParticipatingResult result = VotingContext.vote(sender.toString(), (UUID) args[0], (VoteType) args[1], sender.isOp());
-        sender.sendMessage(Constants.TEXTS.format(switch (result.type()) {
+        I18n.sendMessage(switch (result.type()) {
             case SUCCESS -> "vote.participate.success";
             case ALREADY_VOTED -> "vote.participate.already_voted";
             case NO_ONGOING -> "vote.participate.no_ongoing";
             case NOT_MATCH -> "vote.participate.not_match";
-        }, sender));
+        }, sender);
     }
 }

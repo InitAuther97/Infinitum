@@ -4,12 +4,11 @@ import cn.apisium.papershelled.annotation.Mixin;
 import cn.apisium.papershelled.plugin.PaperShelledPlugin;
 import cn.apisium.papershelled.plugin.PaperShelledPluginDescription;
 import cn.apisium.papershelled.plugin.PaperShelledPluginLoader;
-import io.github.initauther97.swalf.TabExecutorDispatcher;
+import io.github.initauther97.ialib.IALib;
+import io.github.initauther97.ialib.event.LibConstructionEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.annotation.command.Command;
-import org.bukkit.plugin.java.annotation.command.Commands;
 import org.bukkit.plugin.java.annotation.dependency.Dependency;
 import org.bukkit.plugin.java.annotation.dependency.DependsOn;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
@@ -17,13 +16,10 @@ import org.bukkit.plugin.java.annotation.plugin.Description;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.Website;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
-import org.dhwpcs.infinitum.Constants;
-import org.dhwpcs.infinitum.GlobalConfig;
+import org.dhwpcs.infinitum.Global;
+import org.dhwpcs.infinitum.I18n;
 import org.dhwpcs.infinitum.chat.ChatEventListener;
-import org.dhwpcs.infinitum.command.CommandAcknowledge;
-import org.dhwpcs.infinitum.command.CommandLanguage;
-import org.dhwpcs.infinitum.command.vote.CommandVoteCreate;
-import org.dhwpcs.infinitum.command.vote.CommandVoteParticipate;
+import org.dhwpcs.infinitum.command.CommandInf;
 import org.dhwpcs.infinitum.mixin.MixinEntityFallingBlock;
 import org.dhwpcs.infinitum.mixin.MixinExplosion;
 import org.dhwpcs.infinitum.mixin.MixinMinecraftServer;
@@ -36,16 +32,8 @@ import java.io.File;
 @Description("PaperShelled plugin for DHW Inf")
 @Author("InitAuther97")
 @Website("github.com/InitAuther97/InfPaper")
-@Commands({
-        @Command(
-                name = "infpaper",
-                desc = "Command root for InfPaper",
-                aliases = {"aikarisgod", "aig", "inf"},
-                usage = "/infpaper <vote/acknowledge/language> ..."
-        )
-})
 @ApiVersion(ApiVersion.Target.v1_17)
-@DependsOn(@Dependency("CommandAPI"))
+@DependsOn({@Dependency("CommandAPI"), @Dependency("IALib")})
 @Mixin({
         MixinExplosion.class,
         MixinEntityFallingBlock.class,
@@ -53,8 +41,19 @@ import java.io.File;
 })
 public class Infinitum extends PaperShelledPlugin {
 
+    private IALib ialib;
+
     public Infinitum(PaperShelledPluginLoader loader, PaperShelledPluginDescription paperShelledDescription, PluginDescriptionFile description, File file) {
         super(loader, paperShelledDescription, description, file);
+    }
+
+    public static String version() {
+        return "1.2";
+    }
+
+    @Override
+    public void onLoad() {
+        getServer().getPluginManager().registerEvents(new Infinitum.Listener(), this);
     }
 
     @Override
@@ -62,24 +61,18 @@ public class Infinitum extends PaperShelledPlugin {
         saveDefaultConfig();
         extractAssets();
         getLog4JLogger().info("Begin config loading");
-        GlobalConfig.read(getConfig());
+        Global.read(getConfig());
+        Global.load(getConfig(), this);
 
         getLog4JLogger().info("Begin text loading");
-        Constants.initAdventure(
+        I18n.initAdventure(
                 getDataFolder().toPath().resolve("assets/infpaper/text"),
-                GlobalConfig::getLanguage, GlobalConfig::getConsoleLang);
+                Global::getLanguage, Global::getConsoleLang, ialib
+        );
 
         getLog4JLogger().info("Begin command registration");
-        TabExecutorDispatcher dispatcher = new TabExecutorDispatcher("infpaper");
-        dispatcher.registerCommand(new CommandAcknowledge(), "acknowledge");
-        dispatcher.registerCommand(new CommandVoteCreate(), "create", "vote");
-        dispatcher.registerCommand(new CommandVoteParticipate(), "participate", "vote");
-        dispatcher.registerCommand(new CommandLanguage(), "language");
-        getServer().getPluginCommand("infpaper").setExecutor(dispatcher);
-        getServer().getPluginCommand("infpaper").setTabCompleter(dispatcher);
-
+        CommandInf.create().register();
         getLog4JLogger().info("InfPaper initialized.");
-        getServer().getPluginManager().registerEvents(new Infinitum.Listener(), this);
     }
 
     private void extractAssets() {
@@ -91,11 +84,18 @@ public class Infinitum extends PaperShelledPlugin {
     @Override
     public void onDisable() {
         getLog4JLogger().info("Begin config saving");
-        GlobalConfig.write(getConfig());
+        Global.write(getConfig());
+        Global.store(getConfig(), this);
         saveConfig();
     }
 
     private class Listener implements org.bukkit.event.Listener {
+
+        @EventHandler
+        public void onLibSetup(LibConstructionEvent event) {
+            ialib = event.getLibrary();
+        }
+
         @EventHandler
         public void onServerStartup(ServerLoadEvent event) {
             getServer().getPluginManager().registerEvents(new ChatEventListener(Infinitum.this), Infinitum.this);

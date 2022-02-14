@@ -2,7 +2,7 @@ package org.dhwpcs.infinitum.mixin;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
-import org.dhwpcs.infinitum.GlobalConfig;
+import org.dhwpcs.infinitum.Global;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,6 +28,6 @@ public abstract class MixinExplosion {
             )
     )
     private boolean forceExplosionKnockback(Entity entity) {
-        return GlobalConfig.fixExplosion || entity.forceExplosionKnockback;
+        return Global.fixExplosion || entity.forceExplosionKnockback;
     }
 }

@@ -1,13 +1,17 @@
 package org.dhwpcs.infinitum.chat;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import io.papermc.paper.chat.ChatRenderer;
+
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+
 import org.bukkit.craftbukkit.command.VanillaCommandWrapper;
 import org.bukkit.entity.Player;
+
 import org.dhwpcs.infinitum.chat.brigadier.ChatSource;
 import org.dhwpcs.infinitum.chat.brigadier.FeatureDispatcher;
 import org.dhwpcs.infinitum.chat.data.MsgHistory;
@@ -47,23 +51,24 @@ public class ChatRendererInf implements ChatRenderer {
         }
         Matcher matcher = MARK_CHAT_FEATURE.matcher(content);
         MatchResult[] results = matcher.results().toArray(MatchResult[]::new);
-        ChatSource[] sources = new ChatSource[results.length];
+        ChatSource src = new ChatSource(VanillaCommandWrapper.getListener(source), results, hist, afterActions);
         for(int i = 0; i < results.length; i++) {
             try {
-                ChatSource src = new ChatSource(VanillaCommandWrapper.getListener(source), results[i], afterActions);
                 FeatureDispatcher.INSTANCE.execute(results[i].group(), src);
-                sources[i] = src;
+                FeatureDispatcher.move(src);
             } catch (CommandSyntaxException e) {
                 e.printStackTrace();
             }
         }
+        FeatureDispatcher.flip(src);
         Component[] allComponents = new Component[2 * results.length + 1];
         allComponents[0] = Component.text(content.substring(0, results[0].start()));
-        for(int i = 1; i < results.length; i++) {
-            allComponents[i*2] = Component.text(content.substring(results[i-1].end(), results[i].start()));
+        for(int i = 0; i + 1 < results.length; i++) {
+            allComponents[i*2] = Component.text(content.substring(results[i].end(), results[i+1].start()));
         }
         for(int i = 0; i < results.length; i++) {
-            allComponents[i*2+1] = sources[i].getReplacement();
+            allComponents[i*2+1] = src.getReplacement();
+            FeatureDispatcher.move(src);
         }
         return TextComponent.ofChildren(allComponents).style(component.style());
     }

@@ -1,6 +1,7 @@
 package org.dhwpcs.infinitum.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import org.dhwpcs.infinitum.command.chunkforcer.CommandChunkforcer;
 import org.dhwpcs.infinitum.command.vote.CommandVote;
 
 public class CommandInf {
@@ -10,6 +11,7 @@ public class CommandInf {
                 .withShortDescription("Command root for Infinitum")
                 .withSubcommand(CommandAcknowledge.create())
                 .withSubcommand(CommandLanguage.create())
-                .withSubcommand(CommandVote.create());
+                .withSubcommand(CommandVote.create())
+                .withSubcommand(CommandChunkforcer.create());
     }
 }

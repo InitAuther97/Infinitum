@@ -2,7 +2,7 @@ package org.dhwpcs.infinitum.voting;
 
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
-import org.dhwpcs.infinitum.GlobalConfig;
+import org.dhwpcs.infinitum.Global;
 import org.dhwpcs.infinitum.voting.callback.IVoteCallback;
 import org.dhwpcs.infinitum.voting.entry.IVoteEntry;
 
@@ -31,7 +31,7 @@ public class Vote {
             if(!opDispose) {
                 vote= switch (type) {
                     case ACCEPT -> vote + 1;
-                    case REJECT -> isOp && GlobalConfig.voteOpAbsoluteDisagreement ? -2147483648 : vote - 1;
+                    case REJECT -> isOp && Global.voteOpAbsoluteDisagreement ? -2147483648 : vote - 1;
                 };
                 opDispose = isOp;
             }

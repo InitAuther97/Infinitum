@@ -126,3 +126,33 @@ command.lang.incorrect_argument: #[input, required]
     - argument: 0
     - translate: 'lang.incorrect_argument'
     - argument: 1
+
+chat.reply: #[msg_sender,time,content]
+  color: GREEN
+  format:
+    raw: chat.reply.reply
+    arguments:
+      - argument: 0
+  hover_event:
+    action: SHOW_TEXT
+    text:
+      format:
+        raw:
+          translate: chat.reply.info
+        arguments:
+          - argument: 1
+          - argument: 2
+
+chat.at.online: #[player]
+  color: BLUE
+  format:
+    raw: '@%s'
+    arguments:
+      - argument: 0
+
+chat.at.offline: #[player]
+  color: GRAY
+  format:
+    raw: '@%s'
+    arguments:
+      - argument: 0

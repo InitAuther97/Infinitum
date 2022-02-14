@@ -1,8 +1,8 @@
 package org.dhwpcs.infinitum.voting.entry;
 
-import io.github.initauther97.adventure.text.TextEntry;
-import org.dhwpcs.infinitum.Constants;
-import org.dhwpcs.infinitum.GlobalConfig;
+import io.github.initauther97.ialib.adventure.text.TextEntry;
+import org.dhwpcs.infinitum.I18n;
+import org.dhwpcs.infinitum.Global;
 
 public class VoteIncorrectTntAccel implements IVoteEntry {
     @Override
@@ -12,11 +12,11 @@ public class VoteIncorrectTntAccel implements IVoteEntry {
 
     @Override
     public TextEntry getDescription() {
-        return Constants.TEXTS.translate("vote.tnt_accel.disable.desc");
+        return I18n.translate("vote.tnt_accel.disable.desc");
     }
 
     @Override
     public Runnable succeedAction() {
-        return () -> GlobalConfig.fixExplosion = false;
+        return () -> Global.fixExplosion = false;
     }
 }

@@ -13,7 +13,10 @@ vote.info: "%s is voting %s."
 lang.success: "Successfully changed language preference."
 lang.incorrect_argument: "is not found.Followings are supported:"
 
-acknowledge.1: "InfPaper ver %s"
+acknowledge.1: "Infinitum %s"
 acknowledge.2: "Inspired by Tracer"
 acknowledge.3: "Made by InitAuther97"
 acknowledge.4: "Modification code by Tracer"
+
+chat.reply.reply: "[Reply to %s]"
+chat.reply.info: "At %s \\n%s"

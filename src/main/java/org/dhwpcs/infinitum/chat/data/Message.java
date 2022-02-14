@@ -6,13 +6,21 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 import java.io.UTFDataFormatException;
 import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.UUID;
 
 public record Message(int id, long timestamp, int tick, UUID sender, Component message) {
+
     public Date timeAsDate() {
         return new Date(timestamp);
     }
+
+    public Temporal timeAsTemporal() {
+        return Instant.ofEpochMilli(timestamp);
+    }
+
     public static Message decode(ByteBuffer buffer) throws MessageFailedException {
         int id = buffer.getInt();
         long timestamp = buffer.getLong();

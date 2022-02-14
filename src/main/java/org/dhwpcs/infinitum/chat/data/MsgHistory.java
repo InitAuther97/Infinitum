@@ -1,5 +1,7 @@
 package org.dhwpcs.infinitum.chat.data;
 
+import io.github.initauther97.ialib.util.ConsumerWithE;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,6 +16,9 @@ public class MsgHistory {
             }
             return chunk.get(id);
         }
+        if(manager != null) {
+
+        }
         return null;
     }
 
@@ -21,7 +26,7 @@ public class MsgHistory {
         this.manager = manager;
     }
 
-    public void put(ChunkMessage messageIn) {
-        message.add(messageIn);
+    public<E extends Exception> void run(ConsumerWithE<List<ChunkMessage>, E> msgcsm) throws E {
+        msgcsm.accept(message);
     }
 }

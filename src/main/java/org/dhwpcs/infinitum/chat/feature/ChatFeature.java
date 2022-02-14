@@ -15,6 +15,6 @@ public interface ChatFeature {
     List<String> aliases();
     Set<ArgumentBuilder<ChatSource, ?>> arguments();
     Component compile(CommandContext<ChatSource> context) throws CommandSyntaxException;
-    default void afterTask(CommandContext<ChatSource> context) throws CommandSyntaxException{
-    }
+    boolean hasAfterTask();
+    default void afterTask(CommandContext<ChatSource> context) {}
 }
