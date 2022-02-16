@@ -9,13 +9,16 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.command.VanillaCommandWrapper;
 import org.bukkit.entity.Player;
 
 import org.dhwpcs.infinitum.chat.brigadier.ChatSource;
 import org.dhwpcs.infinitum.chat.brigadier.FeatureDispatcher;
+import org.dhwpcs.infinitum.chat.data.Message;
 import org.dhwpcs.infinitum.chat.data.MsgHistory;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.MatchResult;
@@ -25,13 +28,15 @@ import java.util.regex.Pattern;
 public class ChatRendererInf implements ChatRenderer {
 
     private MsgHistory hist;
+    private final FeatureDispatcher dispatcher;
     private final Pattern MARK_CHAT_FEATURE = Pattern.compile("\\\\{0}\\$\\{(.*)\\}");
     private final Pattern AT_ALIAS = Pattern.compile("\\\\{0}@(.*)\b");
     private final String WHOLE_ESCAPE_MARK = "!#";
     private final List<Runnable> afterActions = new LinkedList<>();
 
-    public ChatRendererInf(MsgHistory history) {
+    public ChatRendererInf(MsgHistory history, FeatureDispatcher dispatcher) {
         this.hist = history;
+        this.dispatcher = dispatcher;
     }
 
     @Override
@@ -40,7 +45,13 @@ public class ChatRendererInf implements ChatRenderer {
                 .clickEvent(ClickEvent.copyToClipboard(String.format("#{@:%s}", nameOfSource)));
         message.clickEvent(ClickEvent.copyToClipboard(String.format("#{reply:%s}", nameOfSource)));
         if(message instanceof TextComponent component) {
-            return parse(source, component);
+            Component parsed = parse(source, component);
+            hist.appendMessage(new Message.Builder()
+                    .uid(source.getUniqueId())
+                    .timestamp(new Date().getTime())
+                    .tick(Bukkit.getCurrentTick())
+                    .message(parsed));
+            return parsed;
         } else return message;
     }
 
@@ -54,7 +65,7 @@ public class ChatRendererInf implements ChatRenderer {
         ChatSource src = new ChatSource(VanillaCommandWrapper.getListener(source), results, hist, afterActions);
         for(int i = 0; i < results.length; i++) {
             try {
-                FeatureDispatcher.INSTANCE.execute(results[i].group(), src);
+                dispatcher.execute(results[i].group(), src);
                 FeatureDispatcher.move(src);
             } catch (CommandSyntaxException e) {
                 e.printStackTrace();

@@ -2,7 +2,7 @@ package org.dhwpcs.infinitum;
 
 import io.github.initauther97.ialib.IALib;
 import io.github.initauther97.ialib.adventure.AdventureObject;
-import io.github.initauther97.ialib.adventure.AdventureWrapped;
+import io.github.initauther97.ialib.adventure.AdventureWrapper;
 import io.github.initauther97.ialib.adventure.ComponentParser;
 import io.github.initauther97.ialib.adventure.SupportedLang;
 import io.github.initauther97.ialib.adventure.text.TranslateTextEntry;
@@ -17,16 +17,12 @@ import java.util.function.Supplier;
 
 public abstract class I18n {
 
-    public static AdventureWrapped TEXTS;
+    public static AdventureWrapper TEXTS;
     public static final Component INF_PREFIX = Component.text("[DHW INF]");
 
     public static void initAdventure(Path root, Function<UUID, SupportedLang> playerLang, Supplier<SupportedLang> consoleLang, IALib lib) {
         TEXTS = lib.createAdventureWrapper(root);
         TEXTS.setLangPrefs(playerLang, consoleLang);
-    }
-
-    public static void setLangPrefs(Function<UUID, SupportedLang> langPrefs, Supplier<SupportedLang> consolePrefs) {
-        TEXTS.setLangPrefs(langPrefs, consolePrefs);
     }
 
     public static Component format(String entry, CommandSender receiver, Object... args) {

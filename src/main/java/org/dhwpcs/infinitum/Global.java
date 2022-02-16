@@ -1,9 +1,12 @@
 package org.dhwpcs.infinitum;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import io.github.initauther97.ialib.adventure.SupportedLang;
 import io.github.initauther97.ialib.IALib;
 import io.github.initauther97.ialib.PlayerLocal;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -12,21 +15,53 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.dhwpcs.infinitum.chat.data.Message;
+import org.dhwpcs.infinitum.chat.data.MsgHistory;
 import org.dhwpcs.infinitum.chunkforcer.ChunkForcer;
+import org.dhwpcs.infinitum.dailictivity.Daily;
+import org.dhwpcs.infinitum.http.InfinitumHttp;
 
+import java.io.IOException;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Global {
+public abstract class Global {
+
     public static boolean sandDuping;
     public static boolean fixExplosion;
     public static boolean voteOpAbsoluteDisagreement;
     public static Map<UUID, SupportedLang> langPrefs;
     public static SupportedLang consoleLang;
     public static boolean chatPlayerFuzzyMatching;
+    public static InfinitumHttp server;
+    public static Daily daily;
+    public static IALib lib;
+    private static MsgHistory history;
     private static ChunkForcer cf;
     private static PlayerLocal<Message> msgLocal;
+
+    public static final DateTimeFormatter FORMATTER = new DateTimeFormatterBuilder()
+            .appendValue(ChronoField.YEAR, 4)
+            .appendLiteral('/')
+            .appendValue(ChronoField.MONTH_OF_YEAR, 2)
+            .appendLiteral('/')
+            .appendValue(ChronoField.DAY_OF_MONTH, 2)
+            .appendLiteral(' ')
+            .appendValue(ChronoField.HOUR_OF_DAY, 2)
+            .appendLiteral(':')
+            .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
+            .appendLiteral(':')
+            .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
+            .toFormatter();
+
+    public static final Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .serializeNulls()
+            .create();
+
     public static ChunkForcer getChunkForcer() {
         return cf;
     }
@@ -43,28 +78,36 @@ public class Global {
         Global.msgLocal = local;
     }
 
-    public static void load(ConfigurationSection config, Plugin instance) {
+    public static void setHttp(InfinitumHttp http) {
+        Global.server = http;
+    }
+
+    public static void setDaily(Daily daily) {
+        Global.daily = daily;
+    }
+
+    public static void load(ConfigurationSection config, Plugin instance, IALib lib) {
+        Global.lib = lib;
         Preconditions.checkNotNull(config);
         Preconditions.checkNotNull(instance);
-        setChunkForcer(ChunkForcer.fromConfig(config.getConfigurationSection("cf"), instance));
+        try {
+            read(config, instance);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        IALib lib = (IALib) instance.getServer().getPluginManager().getPlugin("IALib");
         setMessageLocal(lib.createPlayerLocal(Message.class));
+        I18n.initAdventure(
+                instance.getDataFolder().toPath().resolve("assets/infpaper/text"),
+                Global::getLanguage, Global::getConsoleLang, lib
+        );
+        setDaily(new Daily(instance));
+        Bukkit.getPluginManager().registerEvents(daily.getListener(), instance);
     }
 
     public static void store(ConfigurationSection config, Plugin plugin) {
         Preconditions.checkNotNull(plugin);
-        ChunkForcer.saveConfig(cf, config);
-    }
-
-    public static SupportedLang getLanguage(CommandSender sender) {
-        if (sender instanceof ConsoleCommandSender) {
-            return consoleLang;
-        } else if (sender instanceof Player) {
-            return getLanguage(((Player) sender).getUniqueId());
-        } else {
-            return SupportedLang.EN_US;
-        }
+        write(config);
     }
 
     public static SupportedLang getLanguage(UUID uid) {
@@ -75,10 +118,6 @@ public class Global {
         return consoleLang;
     }
 
-    public static void setConsoleLang(SupportedLang lang) {
-        consoleLang = lang;
-    }
-
     public static void setLanguage(CommandSender sender, SupportedLang lang) {
         if (sender instanceof ConsoleCommandSender) {
             consoleLang = lang;
@@ -87,27 +126,7 @@ public class Global {
         }
     }
 
-    public static boolean isSandDuping() {
-        return sandDuping;
-    }
-
-    public static boolean isFixExplosion() {
-        return fixExplosion;
-    }
-
-    public static boolean isVoteOpAbsoluteDisagreement() {
-        return voteOpAbsoluteDisagreement;
-    }
-
-    public static Map<UUID, SupportedLang> getLangPrefs() {
-        return langPrefs;
-    }
-
-    public static boolean isChatPlayerFuzzyMatching() {
-        return chatPlayerFuzzyMatching;
-    }
-
-    public static void read(FileConfiguration config) {
+    public static void read(ConfigurationSection config, Plugin instance) throws IOException {
         ConfigurationSection modifiers = config.getConfigurationSection("modifiers");
         Global.fixExplosion = modifiers.getBoolean("fix_explosion", false);
         Global.sandDuping = modifiers.getBoolean("sand_duping", false);
@@ -123,11 +142,21 @@ public class Global {
             Global.langPrefs.put(UUID.fromString(key), SupportedLang.valueOf(langPrefs.getString(key)));
         }
 
+        ConfigurationSection cs = config.getConfigurationSection("cf");
+        if(cs == null) {
+            cs = config.createSection("cf");
+        }
+        setChunkForcer(ChunkForcer.fromConfig(cs, instance));
+
         Global.consoleLang = SupportedLang.valueOf(config.getString("console_lang"));
+
         IALib lib = (IALib) Bukkit.getPluginManager().getPlugin("IALib");
+        msgLocal = lib.createPlayerLocal(Message.class);
+
+        setHttp(new InfinitumHttp(config.getInt("http_port"), instance));
     }
 
-    public static void write(FileConfiguration config) {
+    public static void write(ConfigurationSection config) {
         ConfigurationSection modifiers = config.getConfigurationSection("modifiers");
         modifiers.set("fix_explosion", Global.fixExplosion);
         modifiers.set("sand_duping", Global.sandDuping);
@@ -138,6 +167,14 @@ public class Global {
         for(UUID key : Global.langPrefs.keySet()) {
             langPrefs.set(key.toString(), Global.getLanguage(key).name());
         }
+        ChunkForcer.saveConfig(cf, config.getConfigurationSection("modifiers"));
     }
 
+    public static MsgHistory getHistory() {
+        return history;
+    }
+
+    public static void setHistory(MsgHistory history) {
+        Global.history = history;
+    }
 }

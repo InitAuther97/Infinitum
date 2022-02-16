@@ -6,6 +6,7 @@ import org.bukkit.OfflinePlayer;
 import java.util.function.Function;
 
 public interface PlayerLocal<T> {
+
     Key<T> key();
     T get(OfflinePlayer player);
     void set(OfflinePlayer player, T value);

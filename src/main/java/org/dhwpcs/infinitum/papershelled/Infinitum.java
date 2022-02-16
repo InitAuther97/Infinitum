@@ -17,7 +17,6 @@ import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.Website;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
 import org.dhwpcs.infinitum.Global;
-import org.dhwpcs.infinitum.I18n;
 import org.dhwpcs.infinitum.chat.ChatEventListener;
 import org.dhwpcs.infinitum.command.CommandInf;
 import org.dhwpcs.infinitum.mixin.MixinEntityFallingBlock;
@@ -61,15 +60,7 @@ public class Infinitum extends PaperShelledPlugin {
         saveDefaultConfig();
         extractAssets();
         getLog4JLogger().info("Begin config loading");
-        Global.read(getConfig());
-        Global.load(getConfig(), this);
-
-        getLog4JLogger().info("Begin text loading");
-        I18n.initAdventure(
-                getDataFolder().toPath().resolve("assets/infpaper/text"),
-                Global::getLanguage, Global::getConsoleLang, ialib
-        );
-
+        Global.load(getConfig(), this, ialib);
         getLog4JLogger().info("Begin command registration");
         CommandInf.create().register();
         getLog4JLogger().info("InfPaper initialized.");
@@ -84,7 +75,6 @@ public class Infinitum extends PaperShelledPlugin {
     @Override
     public void onDisable() {
         getLog4JLogger().info("Begin config saving");
-        Global.write(getConfig());
         Global.store(getConfig(), this);
         saveConfig();
     }
@@ -100,6 +90,7 @@ public class Infinitum extends PaperShelledPlugin {
         public void onServerStartup(ServerLoadEvent event) {
             getServer().getPluginManager().registerEvents(new ChatEventListener(Infinitum.this), Infinitum.this);
             getServer().getScheduler().scheduleSyncRepeatingTask(Infinitum.this, VotingContext.TICKING_INTERFACE, 0, 20);
+            Global.server.start();
         }
     }
 }

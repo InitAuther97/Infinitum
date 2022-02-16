@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.dhwpcs.infinitum.Global;
 import org.dhwpcs.infinitum.I18n;
 import org.dhwpcs.infinitum.chat.brigadier.ChatSource;
 import org.dhwpcs.infinitum.chat.data.Message;
@@ -19,20 +20,6 @@ import java.util.List;
 import java.util.Set;
 
 public class FeatureReply implements ChatFeature {
-
-    DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-            .appendValue(ChronoField.YEAR, 4)
-            .appendLiteral('/')
-            .appendValue(ChronoField.MONTH_OF_YEAR, 2)
-            .appendLiteral('/')
-            .appendValue(ChronoField.DAY_OF_MONTH, 2)
-            .appendLiteral(' ')
-            .appendValue(ChronoField.HOUR_OF_DAY, 2)
-            .appendLiteral(':')
-            .appendValue(ChronoField.MINUTE_OF_HOUR, 2)
-            .appendLiteral(':')
-            .appendValue(ChronoField.SECOND_OF_MINUTE, 2)
-            .toFormatter();
 
     @Override
     public String name() {
@@ -61,8 +48,9 @@ public class FeatureReply implements ChatFeature {
         return I18n.format("chat.reply.format",
                         context.getSource().getBukkitSender(),
                         Bukkit.getOfflinePlayer(msg.sender()).getName(),
-                        formatter.format(msg.timeAsTemporal()),
-                        msg.message()).color(NamedTextColor.LIGHT_PURPLE);
+                        Global.FORMATTER.format(msg.timeAsTemporal()),
+                        msg.message())
+                .color(NamedTextColor.LIGHT_PURPLE);
     }
 
     @Override

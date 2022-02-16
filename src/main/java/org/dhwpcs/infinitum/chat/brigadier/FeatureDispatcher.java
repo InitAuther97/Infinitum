@@ -7,8 +7,8 @@ import net.kyori.adventure.text.Component;
 import org.dhwpcs.infinitum.chat.feature.ChatFeature;
 
 public class FeatureDispatcher {
-    public static CommandDispatcher<ChatSource> INSTANCE = new CommandDispatcher<>();
-    public static void register(ChatFeature feature) {
+    public CommandDispatcher<ChatSource> dispatcher = new CommandDispatcher<>();
+    public void register(ChatFeature feature) {
         LiteralArgumentBuilder<ChatSource> builder = LiteralArgumentBuilder.literal(feature.id());
         feature.arguments().forEach(builder::then);
         builder.executes(ctx -> {
@@ -18,6 +18,10 @@ public class FeatureDispatcher {
             source.afterTask(() -> feature.afterTask(ctx));
             return result == null ? 0 : 1;
         });
+    }
+
+    public int execute(String cmd, ChatSource source) throws CommandSyntaxException {
+        return dispatcher.execute(cmd, source);
     }
 
     public static boolean move(ChatSource source) {

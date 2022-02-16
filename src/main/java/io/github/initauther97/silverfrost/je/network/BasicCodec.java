@@ -9,7 +9,6 @@ public class BasicCodec {
     public static void writeVarInt(int value, ByteBuffer buf) {
         do {
             byte temp = (byte) (value & 0b01111111);
-            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
             value >>>= 7;
             if (value != 0) {
                 temp |= 0b10000000;
@@ -37,7 +36,6 @@ public class BasicCodec {
     public static void writeVarLong(long value, ByteBuffer buf) {
         do {
             byte temp = (byte) (value & 0b01111111);
-            // Note: >>> means that the sign bit is shifted with the rest of the number rather than being left alone
             value >>>= 7;
             if (value != 0) {
                 temp |= 0b10000000;

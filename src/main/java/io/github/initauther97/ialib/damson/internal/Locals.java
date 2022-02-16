@@ -27,16 +27,12 @@ public class Locals {
         ll.put(key, value);
     }
 
-    public static<T> Object get(Key<?> local, Object key) {
+    public static Object get(Key<?> local, Object key) {
         Map ll = LOCAL_POOL.get(local);
         if(ll == null) {
             throw new IllegalArgumentException("Not registered local!");
         }
-        Object result = ll.get(key);
-        if(result == null) {
-            throw new IllegalArgumentException("Entry not present!");
-        }
-        return ll;
+        return ll.get(key);
     }
 
     public static boolean present(Key<?> local, Object key) {

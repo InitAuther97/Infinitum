@@ -39,6 +39,9 @@ public class DamsonPlayerLocal<T> implements PlayerLocal<T> {
     @Override
     public T computeIfPresent(OfflinePlayer player, Function<T, T> map) {
         T t = (T) Locals.get(key, player.getUniqueId());
+        if(t == null) {
+            return null;
+        }
         t = map.apply(t);
         Locals.put(key, player.getUniqueId(), t);
         return t;

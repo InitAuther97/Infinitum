@@ -6,6 +6,7 @@ public class CommandChat {
     public static CommandAPICommand create() {
         return new CommandAPICommand("chat")
                 .withShortDescription("Infinitum chat additions")
-                .withSubcommand()
+                .withSubcommand(CommandChatId.create())
+                .withSubcommand(CommandChatCopy.create());
     }
 }

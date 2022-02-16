@@ -30,8 +30,8 @@ public class MessageFailedException extends Exception {
 
     public enum Type {
         CHUNK_NOT_FOUND,
-        MSG_PARSE_FAILED,
         NO_SUCH_MESSAGE,
-        BROKEN_MESSAGE
+        BROKEN_MESSAGE,
+        DESYNC
     }
 }

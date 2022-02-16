@@ -15,7 +15,7 @@ public class ComponentParser {
         return result;
     }
 
-    public static TranslateTextEntry translate(String name, AdventureWrapped adv) {
+    public static TranslateTextEntry translate(String name, AdventureWrapper adv) {
         return new TranslateTextEntry(lang -> adv.i18n.get(lang).get(name));
     }
 
