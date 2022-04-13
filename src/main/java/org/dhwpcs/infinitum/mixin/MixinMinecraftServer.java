@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer {
-    @Inject(method = "getServerModName", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "getServerModName", at = @At("TAIL"), cancellable = true, remap = false)
     private void injectGetServerModName(CallbackInfoReturnable<String> info) {
-        info.setReturnValue("InfPaper");
+        info.setReturnValue(info.getReturnValue().concat(", Infinitum"));
     }
 }

@@ -5,23 +5,30 @@ import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.exceptions.WrapperCommandSyntaxException;
 import dev.jorel.commandapi.executors.EntityCommandExecutor;
 import org.bukkit.entity.Entity;
-import org.dhwpcs.infinitum.Global;
+import org.dhwpcs.infinitum.Infinitum;
 
 public class CommandForcerEnable implements EntityCommandExecutor {
-    public static CommandAPICommand create() {
+    private final Infinitum infinitum;
+
+    public CommandForcerEnable(Infinitum infinitum) {
+
+        this.infinitum = infinitum;
+    }
+
+    public static CommandAPICommand create(Infinitum infinitum) {
         return new CommandAPICommand("enable")
                 .withArguments(new BooleanArgument("global"))
                 .withShortDescription("Enable the chunk forcer")
-                .executesEntity(new CommandForcerEnable());
+                .executesEntity(new CommandForcerEnable(infinitum));
     }
 
     @Override
     public void run(Entity commandSender, Object[] objects) throws WrapperCommandSyntaxException {
         boolean isGlobal = (boolean) objects[0];
         if(isGlobal) {
-            Global.getChunkForcer().enableGlobal(commandSender);
+            infinitum.getWorld().getForcer().enableGlobal(commandSender);
         } else {
-            Global.getChunkForcer().enable(commandSender, commandSender.getWorld());
+            infinitum.getWorld().getForcer().enable(commandSender, commandSender.getWorld());
         }
     }
 }

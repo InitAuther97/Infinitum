@@ -1,12 +1,12 @@
 command.vote.create.success:
   color: GREEN
-  translate: vote.create.success
+  translate: command.vote.create.success
 
 command.vote.create.failed:
   color: RED
-  translate: vote.create.failed
+  translate: command.vote.create.failed
 
-command.vote.create.unknown_vote:
+command.vote.create.unknown_vote: #[vote_id]
   color: RED
   format:
     raw:
@@ -16,15 +16,15 @@ command.vote.create.unknown_vote:
 
 command.vote.participate.ended:
   color: RED
-  translate: vote.participate.ended
+  translate: command.vote.participate.ended
 
 command.vote.participate.no_ongoing:
   color: RED
-  translate: vote.participate.no_ongoing
+  translate: command.vote.participate.no_ongoing
 
 command.vote.create.already_ongoing: #[vote_uid]
   color: RED
-  translate: vote.participate.already_ongoing
+  translate: command.vote.participate.already_ongoing
   hover_event:
     action: SHOW_TEXT
     text:
@@ -32,15 +32,15 @@ command.vote.create.already_ongoing: #[vote_uid]
 
 command.vote.participate.already_voted:
   color: RED
-  translate: vote.participate.already_voted
+  translate: command.vote.participate.already_voted
 
 command.vote.participate.incorrect_argument:
   color: RED
-  translate: vote.participate.incorrect_argument
+  translate: command.vote.participate.incorrect_argument
 
-command.vote.participate.oper.accept:
+command.vote.participate.success:
   color: GREEN
-  translate: vote.participate.oper.accept
+  translate: command.vote.participate.accept
 
 command.vote.result.accept: #[vote_id,vote_desc]
   value:
@@ -50,9 +50,9 @@ command.vote.result.accept: #[vote_id,vote_desc]
         text:
           argument: 1
 
-    - translate: vote.result
+    - translate: command.vote.result
 
-    - translate: vote.result.type.accept
+    - translate: command.vote.result.type.accept
       color: GREEN
 
 command.vote.result.reject: #[vote_id,vote_desc]
@@ -63,16 +63,16 @@ command.vote.result.reject: #[vote_id,vote_desc]
         text:
           argument: 1
 
-    - translate: vote.result
+    - translate: command.vote.result
 
-    - translate: vote.result.type.reject
+    - translate: command.vote.result.type.reject
       color: GREEN
 
 command.vote.info: #[player,vote_id,vote_desc,vote_uid]
   value:
     - format:
         raw:
-          translate: vote.info
+          translate: command.vote.info
         arguments:
           - argument: 0
           - argument: 1
@@ -80,22 +80,22 @@ command.vote.info: #[player,vote_id,vote_desc,vote_uid]
         action: SHOW_TEXT
         text:
           argument: 2
-    - translate: vote.info.accept
+    - translate: command.vote.info.accept
       color: GREEN
       click_event:
         action: RUN_COMMAND
         value:
           format:
-            raw: "/infpaper vote participate %s accept"
+            raw: "/infpaper vote participate {} accept"
             arguments:
               - argument: 3
-    - translate: vote.info.reject
+    - translate: command.vote.info.reject
       color: RED
       click_event:
         action: RUN_COMMAND
         value:
           format:
-            raw: "/infpaper vote participate %s reject"
+            raw: "/infpaper vote participate {} reject"
             arguments:
               - argument: 3
 
@@ -103,28 +103,28 @@ command.acknowledge: #[version]
   value:
     - format:
         raw:
-          translate: acknowledge.1
+          translate: command.acknowledge.1
         arguments:
           - argument: 0
     - "\n"
-    - translate: acknowledge.2
+    - translate: command.acknowledge.2
     - "\n"
-    - translate: acknowledge.3
+    - translate: command.acknowledge.3
     - "\n"
-    - translate: acknowledge.4
+    - translate: command.acknowledge.4
 
 command.vote.usage: "/aikarisgod vote create/participate ..."
 command.vote.creage.usage: "/aikarisgod vote create <voteid> [duration]"
 command.vote.participate.usage: "/aikarisgod vote participate <voteid> <...>"
 
 command.lang.success:
-  translate: 'lang.success'
+  translate: 'command.lang.success'
 
 command.lang.incorrect_argument: #[input, required]
   color: RED
   value:
     - argument: 0
-    - translate: 'lang.incorrect_argument'
+    - translate: 'command.lang.incorrect_argument'
     - argument: 1
 
 chat.reply: #[msg_sender,time,content]
@@ -146,13 +146,30 @@ chat.reply: #[msg_sender,time,content]
 chat.at.online: #[player]
   color: BLUE
   format:
-    raw: '@%s'
+    raw: '@{}'
     arguments:
       - argument: 0
 
 chat.at.offline: #[player]
   color: GRAY
   format:
-    raw: '@%s'
+    raw: '@{}'
     arguments:
       - argument: 0
+
+chat.tag.info: #[tag_name,parameter_list,attributes]
+  color: AQUA
+  format:
+    raw:
+      translate: chat.tag.info
+    arguments:
+      - argument: 0
+  hover_event:
+    action: SHOW_TEXT
+    text:
+      format:
+        raw:
+          translate: chat.tag.info.detail
+        arguments:
+          - argument: 1
+          - argument: 2

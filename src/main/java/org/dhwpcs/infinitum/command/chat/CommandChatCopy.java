@@ -5,27 +5,32 @@ import dev.jorel.commandapi.exceptions.WrapperCommandSyntaxException;
 import dev.jorel.commandapi.executors.PlayerCommandExecutor;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
-import org.dhwpcs.infinitum.Global;
-import org.dhwpcs.infinitum.I18n;
 import org.dhwpcs.infinitum.chat.data.Message;
+import org.dhwpcs.infinitum.Infinitum;
 
 public class CommandChatCopy implements PlayerCommandExecutor {
 
-    public static CommandAPICommand create() {
+    private final Infinitum infinitum;
+
+    public CommandChatCopy(Infinitum infinitum) {
+        this.infinitum = infinitum;
+    }
+
+    public static CommandAPICommand create(Infinitum infinitum) {
         return new CommandAPICommand("copy")
                 .withShortDescription("Copy a chat content")
-                .executesPlayer(new CommandChatCopy());
+                .executesPlayer(new CommandChatCopy(infinitum));
     }
 
     @Override
     public void run(Player player, Object[] objects) throws WrapperCommandSyntaxException {
-        Message msg = Global.getMessageLocal().get(player);
+        Message msg = infinitum.getChat().getGlobal().getMessageLocal().get(player);
         if(msg == null) {
-            I18n.sendMessage("command.chat.copy.not_set", player);
+            infinitum.getI18n().sendMessage("command.chat.copy.not_set", player);
         } else if(msg.message() instanceof TextComponent it) {
-            I18n.sendMessage("command.chat.copy.button", player, it.content());
+            infinitum.getI18n().sendMessage("command.chat.copy.button", player, it.content());
         } else {
-            I18n.sendMessage("command.chat.copy.unsupported_type", player);
+            infinitum.getI18n().sendMessage("command.chat.copy.unsupported_type", player);
         }
     }
 }

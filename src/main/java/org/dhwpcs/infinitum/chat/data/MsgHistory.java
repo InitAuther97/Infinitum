@@ -1,6 +1,6 @@
 package org.dhwpcs.infinitum.chat.data;
 
-import io.github.initauther97.ialib.util.ConsumerWithE;
+import io.github.initauther97.nugget.util.ConsumerWithE;
 
 import java.io.IOException;
 import java.util.*;
@@ -9,7 +9,7 @@ public class MsgHistory {
     private final List<ChunkMessage> message = new LinkedList<>();
     final SortedSet<MsgFileInfo> infos = new TreeSet<>(Comparator.comparingInt(MsgFileInfo::begin));
     int maxId;
-    private MsgManager manager;
+    MsgManager manager;
 
     public MsgHistory(MsgManager manager) throws IOException {
         this.manager = manager;

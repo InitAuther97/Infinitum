@@ -53,7 +53,7 @@ public class MsgManager {
         } else {
             JsonObject jo;
             try(BufferedReader br = Files.newBufferedReader(index)) {
-                jo = new JsonParser().parse(br).getAsJsonObject();
+                jo = JsonParser.parseReader(br).getAsJsonObject();
             }
             hist.infos.addAll(new Gson().fromJson(jo.get("infos"),
                     new TypeToken<Set<MsgFileInfo>>() {}.getType()));
@@ -107,7 +107,9 @@ public class MsgManager {
         }
     }
 
-    public void release(MsgHistory hist) throws MessageFailedException{
+    public void release(MsgHistory hist, int begin, int end) throws MessageFailedException{
+        if(hist.manager == this) {
 
+        }
     }
 }

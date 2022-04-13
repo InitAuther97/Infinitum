@@ -9,25 +9,31 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.dhwpcs.infinitum.Global;
-import org.dhwpcs.infinitum.I18n;
 import org.dhwpcs.infinitum.chat.data.Message;
+import org.dhwpcs.infinitum.Infinitum;
 
 import java.time.temporal.Temporal;
 
 public class CommandChatInfo implements PlayerCommandExecutor {
 
-    public static CommandAPICommand create() {
+    private final Infinitum infinitum;
+
+    public CommandChatInfo(Infinitum infinitum) {
+        this.infinitum = infinitum;
+    }
+
+    public static CommandAPICommand create(Infinitum infinitum) {
         return new CommandAPICommand("info")
                 .withShortDescription("Pull the information of the message")
-                .executesPlayer(new CommandChatInfo());
+                .executesPlayer(new CommandChatInfo(infinitum));
     }
 
     @Override
     public void run(Player player, Object[] objects) throws WrapperCommandSyntaxException {
-        Message msg = Global.getMessageLocal().get(player);
+        Message msg = infinitum.getChat().getGlobal().getMessageLocal().get(player);
         OfflinePlayer op = Bukkit.getOfflinePlayer(msg.sender());
         Component sender = !op.hasPlayedBefore() ? Component.text("UNKNOWN SENDER").color(NamedTextColor.RED) : Component.text(op.getName());
         Temporal time = msg.timeAsTemporal();
-        I18n.sendMessage("chat.info", player, sender, Global.FORMATTER.format(time), msg.message());
+        infinitum.getI18n().sendMessage("chat.info", player, sender, Global.FORMATTER.format(time), msg.message());
     }
 }

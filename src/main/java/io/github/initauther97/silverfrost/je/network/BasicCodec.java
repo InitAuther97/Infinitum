@@ -51,8 +51,8 @@ public class BasicCodec {
         do {
             read = buf.get();
             long value = (read & 0b01111111);
-            result |= (value << (7 * numRead));
-
+            result |= value;
+            result <<= 7;
             numRead++;
             if (numRead > 10) {
                 throw new RuntimeException("VarLong is too big");
@@ -122,4 +122,6 @@ public class BasicCodec {
         buf.putLong(uid.getLeastSignificantBits());
         buf.putLong(uid.getMostSignificantBits());
     }
+
+
 }

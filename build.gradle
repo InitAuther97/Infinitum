@@ -6,8 +6,8 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'cn.apisium.papershelled' version '1.0.8'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'cn.apisium.papershelled' version '1.2.1'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 def releaseVersion = version = '1.0-RC1'
@@ -15,7 +15,7 @@ def releaseVersion = version = '1.0-RC1'
 group 'initauther97'
 
 paperShelled {
-    jarUrl = 'https://papermc.io/api/v2/projects/paper/versions/1.17.1/builds/257/downloads/paper-1.17.1-257.jar'
+    jarUrl = 'https://papermc.io/api/v2/projects/paper/versions/1.18.1/builds/175/downloads/paper-1.18.1-175.jar'
     relocateCraftBukkit = true
 }
 
@@ -32,12 +32,8 @@ shadowJar {
 
     archiveClassifier.set('')
     minimize()
-
-    filesMatching('Constants.java') {
-        filter { it.replaceAll('RELEASE_VERSION', releaseVersion) }
-    }
     
-    filesMatching('InfPaper.java') {
+    filesMatching('Infinitum.java') {
         filter { it.replaceAll('RELEASE_VERSION', releaseVersion) }
     }
 }

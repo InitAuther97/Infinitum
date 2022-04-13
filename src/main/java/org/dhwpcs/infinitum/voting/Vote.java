@@ -2,7 +2,6 @@ package org.dhwpcs.infinitum.voting;
 
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
-import org.dhwpcs.infinitum.Global;
 import org.dhwpcs.infinitum.voting.callback.IVoteCallback;
 import org.dhwpcs.infinitum.voting.entry.IVoteEntry;
 
@@ -19,21 +18,22 @@ public class Vote {
     UUID uid = UUID.randomUUID();
     SetMultimap<VoteType, UUID> participants = MultimapBuilder.enumKeys(VoteType.class).hashSetValues().build();
 
-    public Vote(IVoteEntry entry, int period, Set<IVoteCallback> hooks) {
+    final boolean opAbD;
+    public Vote(IVoteEntry entry, int period, Set<IVoteCallback> hooks, boolean opAbD) {
         this.entry = entry;
         remaining = period;
+        this.opAbD = opAbD;
         vote = 0;
-        this.hooks =Set.copyOf(hooks);
+        this.hooks = Set.copyOf(hooks);
     }
 
     public VoteParticipatingResult vote(VoteType type, UUID id, boolean isOp) {
         if(participants.put(type, id)) {
             if(!opDispose) {
-                vote= switch (type) {
-                    case ACCEPT -> vote + 1;
-                    case REJECT -> isOp && Global.voteOpAbsoluteDisagreement ? -2147483648 : vote - 1;
+                vote += switch (type) {
+                    case ACCEPT -> 1;
+                    case REJECT -> -1;
                 };
-                opDispose = isOp;
             }
             return new VoteParticipatingResult(VoteParticipatingResultType.SUCCESS);
         }
@@ -56,10 +56,14 @@ public class Vote {
         return entry;
     }
 
-    public  void tick() {
-        if(remaining <= 0) {
+    public  void tick(InfinitumVoting ctx) {
+        if(opDispose && opAbD) {
+            finished = true;
+            hooks.forEach(it -> it.voteEnded(this, VoteResult.DENY));
+        } else if(remaining <= 0) {
+            finished = true;
             if(vote > 0) {
-                entry.succeedAction().run();
+                entry.succeedAction().accept(ctx);
                 hooks.forEach(it -> it.voteEnded(this, VoteResult.ACCEPT));
             } else {
                 hooks.forEach(it -> it.voteEnded(this, VoteResult.DENY));

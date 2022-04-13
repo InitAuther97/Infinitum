@@ -1,10 +1,20 @@
-console_lang: EN_US
-modifiers:
+i18n:
+ console_lang: EN_US
+
+network:
+ port: 80
+
+statistics:
+
+mixin:
   fix_explosion: false
   sand_duping: false
-vote_op_absolute_disagreement: true
-chat_player_fuzzy_matching: true
-chunkforcer:
-  minecraft:nether:
-  minecraft:the_end:
-  minecraft:overworld:
+
+vote:
+  vote_op_absolute_disagreement: true
+
+world:
+  chunkforcer:
+    minecraft:nether:
+    minecraft:the_end:
+    minecraft:overworld:

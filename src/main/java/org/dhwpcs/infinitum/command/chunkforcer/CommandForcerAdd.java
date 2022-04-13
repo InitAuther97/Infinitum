@@ -10,13 +10,18 @@ import dev.jorel.commandapi.wrappers.Location2D;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.dhwpcs.infinitum.Global;
-import org.dhwpcs.infinitum.I18n;
-import org.dhwpcs.infinitum.chunkforcer.ChunkForcer;
-import org.dhwpcs.infinitum.util.Pos2D;
+import org.dhwpcs.infinitum.world.ChunkForcer;
+import org.dhwpcs.infinitum.Infinitum;
+import io.github.initauther97.nugget.util.Pos2D;
 
 public class CommandForcerAdd implements CommandExecutor {
-    public static CommandAPICommand create() {
+    private final Infinitum infinitum;
+
+    public CommandForcerAdd(Infinitum infinitum) {
+        this.infinitum = infinitum;
+    }
+
+    public static CommandAPICommand create(Infinitum infinitum) {
         return new CommandAPICommand("add")
                 .withShortDescription("Add a chunk in to be forced list")
                 .withArguments(new Location2DArgument("chunkPos", LocationType.BLOCK_POSITION))
@@ -24,7 +29,7 @@ public class CommandForcerAdd implements CommandExecutor {
                     info.sender().getServer().getWorlds().stream()
                             .map(w -> w.getKey().toString()).toArray(String[]::new)
                 ))
-                .executes(new CommandForcerAdd());
+                .executes(new CommandForcerAdd(infinitum));
     }
 
     @Override
@@ -33,17 +38,17 @@ public class CommandForcerAdd implements CommandExecutor {
         String dimension = (String) objects[1];
         NamespacedKey key = NamespacedKey.fromString(dimension);
         if(key == null) {
-            I18n.sendMessage("command.cf.illegal_dim", commandSender, dimension);
+            infinitum.getI18n().sendMessage("command.cf.illegal_dim", commandSender, dimension);
             return;
         }
         World world = commandSender.getServer().getWorld(key);
         if(world == null) {
-            I18n.sendMessage("command.cf.illegal_dim", commandSender, dimension);
+            infinitum.getI18n().sendMessage("command.cf.illegal_dim", commandSender, dimension);
             return;
         }
-        ChunkForcer cf = Global.getChunkForcer();
+        ChunkForcer cf = infinitum.getWorld().getForcer();
         if(cf.isEnabled()) {
-            I18n.sendMessage("command.cf.already_enabled", commandSender, dimension);
+            infinitum.getI18n().sendMessage("command.cf.already_enabled", commandSender, dimension);
             return;
         }
         cf.addChunk(world, Pos2D.flattenLocation(l2d));

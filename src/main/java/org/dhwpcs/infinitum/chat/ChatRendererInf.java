@@ -1,87 +1,76 @@
 package org.dhwpcs.infinitum.chat;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import io.github.initauther97.nugget.adventure.SupportedLang;
+import io.github.initauther97.nugget.util.Tuple;
 import io.papermc.paper.chat.ChatRenderer;
-
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
-
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.command.VanillaCommandWrapper;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import org.dhwpcs.infinitum.chat.brigadier.ChatSource;
-import org.dhwpcs.infinitum.chat.brigadier.FeatureDispatcher;
+import org.dhwpcs.infinitum.chat.adventure.Translatable;
 import org.dhwpcs.infinitum.chat.data.Message;
-import org.dhwpcs.infinitum.chat.data.MsgHistory;
+import org.dhwpcs.infinitum.chat.tag.ChatContext;
+import org.dhwpcs.infinitum.chat.tag.parse.TagFailedException;
+import org.dhwpcs.infinitum.Infinitum;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 public class ChatRendererInf implements ChatRenderer {
 
-    private MsgHistory hist;
-    private final FeatureDispatcher dispatcher;
-    private final Pattern MARK_CHAT_FEATURE = Pattern.compile("\\\\{0}\\$\\{(.*)\\}");
-    private final Pattern AT_ALIAS = Pattern.compile("\\\\{0}@(.*)\b");
-    private final String WHOLE_ESCAPE_MARK = "!#";
+    private final Infinitum infinitum;
+    private final ChatGlobal global;
     private final List<Runnable> afterActions = new LinkedList<>();
+    private final Multimap<String, Tuple<UUID, Translatable>> cache = MultimapBuilder.hashKeys().hashSetValues().build();
 
-    public ChatRendererInf(MsgHistory history, FeatureDispatcher dispatcher) {
-        this.hist = history;
-        this.dispatcher = dispatcher;
+    public ChatRendererInf(Infinitum infinitum, ChatGlobal global) {
+        this.infinitum = infinitum;
+        this.global = global;
     }
 
     @Override
     public Component render(Player source, Component nameOfSource, Component message, Audience receiver) {
-        TextComponent name = TextComponent.ofChildren(nameOfSource)
+        Component name = nameOfSource
                 .clickEvent(ClickEvent.copyToClipboard(String.format("#{@:%s}", nameOfSource)));
         message.clickEvent(ClickEvent.copyToClipboard(String.format("#{reply:%s}", nameOfSource)));
         if(message instanceof TextComponent component) {
-            Component parsed = parse(source, component);
-            hist.appendMessage(new Message.Builder()
+            ChatContext ctx = new ChatContext(source, component, infinitum, global);
+            TextComponent parsed;
+            if(component.content().startsWith(global.getWholeEscape())){
+                parsed = component.content(component.content().substring(2));
+            } else {
+                Collection<Tuple<UUID, Translatable>> cacheds = cache.get(component.content());
+                Translatable tr = null;
+                for(Tuple<UUID, Translatable> c : cacheds) {
+                    if(c.first().equals(source.getUniqueId())) {
+                        tr = c.second();
+                    }
+                }
+
+                if(tr == null)  try {
+                    tr = global.getParser().parse(ctx);
+                    cache.put(component.content(), new Tuple<>(source.getUniqueId(), tr));
+                } catch (TagFailedException e) {
+                    e.printStackTrace();
+                    if(receiver instanceof CommandSender p) {
+                        return Component.translatable("chat.type.text", name, infinitum.getI18n().format("chat.", p, message));
+                    } else return Component.translatable("chat.type.text", name, infinitum.getI18n().format("chat", SupportedLang.EN_US, message));
+                }
+
+                parsed = tr.translate(receiver instanceof CommandSender ? infinitum.getI18n().getLanguage((CommandSender) receiver) : SupportedLang.EN_US);
+            }
+            global.getHistory().appendMessage(new Message.Builder()
                     .uid(source.getUniqueId())
                     .timestamp(new Date().getTime())
                     .tick(Bukkit.getCurrentTick())
-                    .message(parsed));
-            return parsed;
+                    .message(component)
+            );
+            return Component.translatable("chat.type.text", name, parsed);
         } else return message;
-    }
-
-    Component parse(Player source, TextComponent component) {
-        String content = component.content();
-        if(content.startsWith(WHOLE_ESCAPE_MARK)) {
-            return Component.text(content.substring(2)).style(component.style());
-        }
-        Matcher matcher = MARK_CHAT_FEATURE.matcher(content);
-        MatchResult[] results = matcher.results().toArray(MatchResult[]::new);
-        ChatSource src = new ChatSource(VanillaCommandWrapper.getListener(source), results, hist, afterActions);
-        for(int i = 0; i < results.length; i++) {
-            try {
-                dispatcher.execute(results[i].group(), src);
-                FeatureDispatcher.move(src);
-            } catch (CommandSyntaxException e) {
-                e.printStackTrace();
-            }
-        }
-        FeatureDispatcher.flip(src);
-        Component[] allComponents = new Component[2 * results.length + 1];
-        allComponents[0] = Component.text(content.substring(0, results[0].start()));
-        for(int i = 0; i + 1 < results.length; i++) {
-            allComponents[i*2] = Component.text(content.substring(results[i].end(), results[i+1].start()));
-        }
-        for(int i = 0; i < results.length; i++) {
-            allComponents[i*2+1] = src.getReplacement();
-            FeatureDispatcher.move(src);
-        }
-        return TextComponent.ofChildren(allComponents).style(component.style());
     }
 
     public Runnable afterTask() {
