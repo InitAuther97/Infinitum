@@ -1,11 +1,11 @@
 package org.dhwpcs.infinitum.command.chunkforcer;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.Location2DArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.exceptions.WrapperCommandSyntaxException;
 import dev.jorel.commandapi.executors.CommandExecutor;
-import io.github.initauther97.nugget.command.suggestion.Suggestor;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -25,7 +25,9 @@ public class CommandForcerRemove implements CommandExecutor {
         return new CommandAPICommand("remove")
                 .withArguments(new Location2DArgument("chunkPos"))
                 .withArguments(new StringArgument("worldIn")
-                        .replaceSuggestionsT(Suggestor.suggestWorldKeys())
+                        .replaceSuggestions(ArgumentSuggestions.strings(info ->
+                            info.sender().getServer().getWorlds().stream().map(World::getKey).map(NamespacedKey::asString).toArray(String[]::new)
+                        ))
                 )
                 .withShortDescription("Remove a chunk to load")
                 .executes(new CommandForcerRemove(infinitum));

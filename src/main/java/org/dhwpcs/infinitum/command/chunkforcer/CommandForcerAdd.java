@@ -1,6 +1,7 @@
 package org.dhwpcs.infinitum.command.chunkforcer;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.Location2DArgument;
 import dev.jorel.commandapi.arguments.LocationType;
 import dev.jorel.commandapi.arguments.StringArgument;
@@ -25,10 +26,10 @@ public class CommandForcerAdd implements CommandExecutor {
         return new CommandAPICommand("add")
                 .withShortDescription("Add a chunk in to be forced list")
                 .withArguments(new Location2DArgument("chunkPos", LocationType.BLOCK_POSITION))
-                .withArguments(new StringArgument("worldIn").replaceSuggestions(info ->
+                .withArguments(new StringArgument("worldIn").replaceSuggestions(ArgumentSuggestions.strings(info ->
                     info.sender().getServer().getWorlds().stream()
                             .map(w -> w.getKey().toString()).toArray(String[]::new)
-                ))
+                )))
                 .executes(new CommandForcerAdd(infinitum));
     }
 

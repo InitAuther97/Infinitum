@@ -19,8 +19,8 @@ public class FileManager{
         parent = null;
     }
 
-    public FileManager(FileManager parent, Path relatedRoot, boolean resolve) {
-        root = resolve ? parent.resolve(relatedRoot) : relatedRoot;
+    public FileManager(FileManager parent, Path relatedRoot) {
+        root = relatedRoot;
         fs = root.getFileSystem();
         this.parent = parent;
     }
@@ -34,11 +34,7 @@ public class FileManager{
     }
 
     public Path resolve(String... parts) {
-        Path now = getRoot();
-        for(String str : parts) {
-            now = now.resolve(str);
-        }
-        return now;
+        return getRoot().resolve(String.join("/", parts));
     }
 
     public boolean exists(Path pth) {

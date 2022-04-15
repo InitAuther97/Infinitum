@@ -39,9 +39,6 @@ public class InfinitumStatistics {
     public void initialize(ConfigurationSection section) throws IOException {
         Map<LocalDate, Map<UUID, Long>> result = new HashMap<>();
         FileManager activity = root.visit(FolderType.MANAGER, "daily_online");
-        if(activity.checkPermission() != AccessPermission.READ_WRITE) {
-            throw new IOException("Could not acquire full file permission for statistics daily_online!");
-        }
         BufferedReader reader = activity.visit(RegularFileType.INPUT_READER, "index.json");
         JsonElement je = JsonParser.parseReader(reader);
         reader.close();
@@ -87,9 +84,6 @@ public class InfinitumStatistics {
 
     public void save(ConfigurationSection section) throws IOException {
         FileManager daily_data = root.visit(FolderType.MANAGER, "daily_online", "data");
-        if(daily_data.checkPermission() != AccessPermission.READ_WRITE) {
-            throw new IOException("Could not acquire full file permission for statistics daily_online!");
-        }
         Map<LocalDate, Map<UUID, Long>> dirty = daily.getDirtyRecent();
         for(LocalDate dte : dirty.keySet()) {
             Map<UUID, Long> map = dirty.get(dte);

@@ -35,7 +35,7 @@ public abstract class CompressedFileType extends RegularFileType<FileManager> {
 
     @Override
     public FileManager onVisit(FileManager manager, Path pth) throws IOException {
-        return new FileManager(manager, createFsRoot(pth), false);
+        return new FileManager(manager, createFsRoot(pth));
     }
 
     protected abstract Path createFsRoot(Path pth) throws IOException;

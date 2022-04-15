@@ -1,6 +1,7 @@
 package org.dhwpcs.infinitum.command.vote;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.executors.PlayerCommandExecutor;
@@ -24,9 +25,9 @@ public class CommandVoteCreate implements PlayerCommandExecutor {
         return new CommandAPICommand("create")
                 .withArguments(
                         new StringArgument("type")
-                                .replaceSuggestions(i -> instance.getVoting().getVoteIds().toArray(String[]::new)),
+                                .replaceSuggestions(ArgumentSuggestions.strings(instance.getVoting().getVoteIds().toArray(String[]::new))),
                         new IntegerArgument("period")
-                                .replaceSuggestions(i -> new String[]{"10","20"}))
+                                .replaceSuggestions(ArgumentSuggestions.strings("10", "20")))
                 .withShortDescription("Create a vote.")
                 .executesPlayer(new CommandVoteCreate(instance));
     }

@@ -1,6 +1,7 @@
 package org.dhwpcs.infinitum.command.vote;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.arguments.UUIDArgument;
 import dev.jorel.commandapi.executors.PlayerCommandExecutor;
@@ -23,11 +24,11 @@ public class CommandVoteParticipate implements PlayerCommandExecutor {
         CommandVoteParticipate instance = new CommandVoteParticipate(infinitum);
         return new CommandAPICommand("participate")
                 .withArguments(
-                        new UUIDArgument("voteid").replaceSuggestions(
-                                i -> infinitum.getVoting().getAllOngoings().stream().map(UUID::toString).toArray(String[]::new)),
-                        new StringArgument("attitude").replaceSuggestions(
+                        new UUIDArgument("voteid").replaceSuggestions(ArgumentSuggestions.strings(
+                                i -> infinitum.getVoting().getAllOngoings().stream().map(UUID::toString).toArray(String[]::new))),
+                        new StringArgument("attitude").replaceSuggestions(ArgumentSuggestions.strings(
                                 i -> VoteType.SUGGESTED_INPUT.toArray(String[]::new)
-                        ))
+                        )))
                 .withShortDescription("Participate in a vote.")
                 .executesPlayer(new CommandVoteParticipate(infinitum));
     }

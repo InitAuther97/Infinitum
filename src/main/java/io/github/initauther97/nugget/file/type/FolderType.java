@@ -20,7 +20,7 @@ public abstract class FolderType<T> implements FileType<T> {
     public static final FolderType<FileManager> MANAGER = new FolderType<>() {
         @Override
         public FileManager onVisit(FileManager manager, Path pth) {
-            return new FileManager(manager, pth, true);
+            return new FileManager(manager, pth);
         }
     };
 
@@ -33,8 +33,7 @@ public abstract class FolderType<T> implements FileType<T> {
 
     @Override
     public VisitOperation createIfNotExist(FileManager manager, Path pth) throws IOException {
-        Files.createDirectory(pth);
-        Files.createFile(pth);
+        Files.createDirectories(pth);
         return VisitOperation.CONTINUE;
     }
 

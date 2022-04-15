@@ -4,11 +4,12 @@ import cn.apisium.papershelled.annotation.Mixin;
 import cn.apisium.papershelled.plugin.PaperShelledPlugin;
 import cn.apisium.papershelled.plugin.PaperShelledPluginDescription;
 import cn.apisium.papershelled.plugin.PaperShelledPluginLoader;
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIConfig;
 import io.github.initauther97.nugget.NuggetLib;
 import io.github.initauther97.nugget.file.FileManager;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.annotation.dependency.Dependency;
-import org.bukkit.plugin.java.annotation.dependency.DependsOn;
+import org.bukkit.plugin.java.annotation.dependency.LoadBefore;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.Description;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
@@ -35,7 +36,7 @@ import java.io.IOException;
 @Author("InitAuther97")
 @Website("github.com/InitAuther97/InfPaper")
 @ApiVersion(ApiVersion.Target.v1_17)
-@DependsOn({@Dependency("CommandAPI"), @Dependency("IALib")})
+@LoadBefore("CommandAPI")
 @Mixin({
         MixinExplosion.class,
         MixinEntityFallingBlock.class,
@@ -43,14 +44,18 @@ import java.io.IOException;
 })
 public class Infinitum extends PaperShelledPlugin {
 
-    private NuggetLib nugget;
-    private final FileManager file = new FileManager(getDataFolder().toPath());
-    private final I18n i18n = new I18n();
-    private final InfinitumNetwork network = new InfinitumNetwork(this);
-    private final InfinitumChat chat = new InfinitumChat(this);
-    private final InfinitumStatistics statistics = new InfinitumStatistics(this);
-    private final InfinitumWorld world = new InfinitumWorld(this);
-    private final InfinitumVoting voting = new InfinitumVoting(this);
+    static {
+        NuggetLib.checkPreload();
+    }
+
+    private NuggetLib nugget = new NuggetLib();
+    private FileManager file;
+    private I18n i18n;
+    private InfinitumNetwork network;
+    private InfinitumChat chat;
+    private InfinitumStatistics statistics;
+    private InfinitumWorld world;
+    private InfinitumVoting voting;
 
     public Infinitum(PaperShelledPluginLoader loader, PaperShelledPluginDescription paperShelledDescription, PluginDescriptionFile description, File file) {
         super(loader, paperShelledDescription, description, file);
@@ -62,15 +67,22 @@ public class Infinitum extends PaperShelledPlugin {
 
     @Override
     public void onLoad() {
-        NuggetLib.checkPreload();
         nugget = new NuggetLib();
+        CommandAPI.onLoad(new CommandAPIConfig().verboseOutput(false).silentLogs(false).useLatestNMSVersion(true));
     }
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         extractAssets();
-        getLogger().info("Begin config loading");
+        getLogger().info("Begin loading");
+        file = new FileManager(getDataFolder().toPath());
+        i18n = new I18n();
+        network = new InfinitumNetwork(this);
+        chat = new InfinitumChat(this);
+        statistics = new InfinitumStatistics(this);
+        world = new InfinitumWorld(this);
+        voting = new InfinitumVoting(this);
         try {
             i18n.initialize(
                     file.resolve("assets","infpaper","text"),
@@ -85,6 +97,7 @@ public class Infinitum extends PaperShelledPlugin {
         }
         getLogger().info("Begin command registration");
         CommandInf.create(this).register();
+        CommandAPI.onEnable(this);
         getLogger().info("InfPaper initialized.");
         network.bootstrap();
     }

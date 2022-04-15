@@ -22,6 +22,8 @@ paperShelled {
 dependencies {
     compileOnly paperShelled.jar()
     compileOnly 'org.ow2.asm:asm:9.2'
+    compileOnly "dev.jorel.CommandAPI:commandapi-shade:7.0.0"
+    runtimeClasspath "dev.jorel.CommandAPI:commandapi-shade:7.0.0"
     compileOnly fileTree(dir: 'lib', include: '*.jar')
 }
 
@@ -29,18 +31,21 @@ shadowJar {
     dependencies {
         relocate('org.bukkit.craftbukkit', 'org.bukkit.craftbukkit.' + paperShelled.craftBukkitVersion.get())
     }
-
     archiveClassifier.set('')
     minimize()
     
     filesMatching('Infinitum.java') {
-        filter { it.replaceAll('RELEASE_VERSION', releaseVersion) }
+        filter { String
+            it.replaceAll('RELEASE_VERSION', releaseVersion)
+        }
     }
 }
 build.dependsOn(shadowJar)
 
 repositories {
     mavenCentral()
+    maven { url "https://jitpack.io" }
+    maven { url "https://repo.codemc.org/repository/maven-public/" }
 }
 
 test {

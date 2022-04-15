@@ -1,6 +1,7 @@
 package org.dhwpcs.infinitum.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.executors.CommandExecutor;
 import io.github.initauther97.nugget.adventure.SupportedLang;
@@ -19,7 +20,7 @@ public class CommandLanguage implements CommandExecutor {
     public static CommandAPICommand create(Infinitum infinitum) {
         return new CommandAPICommand("language")
                 .withArguments(new StringArgument("lang")
-                        .replaceSuggestions(i -> SupportedLang.NAMES.toArray(String[]::new)))
+                        .replaceSuggestions(ArgumentSuggestions.strings(SupportedLang.NAMES.toArray(String[]::new))))
                 .executes(new CommandLanguage(infinitum));
     }
 
