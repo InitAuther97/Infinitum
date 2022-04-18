@@ -129,6 +129,6 @@ public class FileManager{
     }
 
     public Path getRoot() {
-        return parent != null ? parent.resolve(root) : root;
+        return root;
     }
 }

@@ -5,7 +5,6 @@ import org.dhwpcs.infinitum.Infinitum;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.concurrent.TimeUnit;
 
 public class InfinitumHttp {
 
@@ -24,6 +23,6 @@ public class InfinitumHttp {
     }
 
     public void stop() {
-        server.stop((int) TimeUnit.SECONDS.toMillis(5));
+        server.stop(5);
     }
 }

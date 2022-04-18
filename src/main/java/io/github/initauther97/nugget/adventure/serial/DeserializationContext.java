@@ -9,6 +9,7 @@ public class DeserializationContext {
 
     public DeserializationContext(Map<SupportedLang, Map<String, String>> i18n) {
         this.i18n = i18n;
+        System.out.println("Set the i18n map:"+i18n);
     }
 
     public String localize(SupportedLang lang, String id) {

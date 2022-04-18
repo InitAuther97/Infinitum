@@ -28,10 +28,10 @@ public class CommandLanguage implements CommandExecutor {
     public void run(CommandSender sender, Object[] objects) {
         SupportedLang lang = SupportedLang.getIfExists((String) objects[0]);
         if(lang == null) {
-            infinitum.getI18n().sendMessage("lang.incorrect_argument", sender, objects[0], SupportedLang.NAMES);
+            infinitum.getI18n().sendMessage("command.lang.incorrect_argument", sender, objects[0], SupportedLang.NAMES);
             return;
         }
         infinitum.getI18n().setLanguage(sender, lang);
-        infinitum.getI18n().sendMessage("lang.success", sender, lang.name());
+        infinitum.getI18n().sendMessage("command.lang.success", sender, lang.name());
     }
 }

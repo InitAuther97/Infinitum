@@ -1,10 +1,7 @@
 package org.dhwpcs.infinitum.command.chunkforcer;
 
 import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.ArgumentSuggestions;
-import dev.jorel.commandapi.arguments.Location2DArgument;
-import dev.jorel.commandapi.arguments.LocationType;
-import dev.jorel.commandapi.arguments.StringArgument;
+import dev.jorel.commandapi.arguments.*;
 import dev.jorel.commandapi.exceptions.WrapperCommandSyntaxException;
 import dev.jorel.commandapi.executors.CommandExecutor;
 import dev.jorel.commandapi.wrappers.Location2D;
@@ -24,9 +21,9 @@ public class CommandForcerAdd implements CommandExecutor {
 
     public static CommandAPICommand create(Infinitum infinitum) {
         return new CommandAPICommand("add")
-                .withShortDescription("Add a chunk in to be forced list")
+                .withShortDescription("Add a chunk to be force-loaded")
                 .withArguments(new Location2DArgument("chunkPos", LocationType.BLOCK_POSITION))
-                .withArguments(new StringArgument("worldIn").replaceSuggestions(ArgumentSuggestions.strings(info ->
+                .withArguments(new GreedyStringArgument("worldIn").replaceSuggestions(ArgumentSuggestions.strings(info ->
                     info.sender().getServer().getWorlds().stream()
                             .map(w -> w.getKey().toString()).toArray(String[]::new)
                 )))
@@ -48,10 +45,12 @@ public class CommandForcerAdd implements CommandExecutor {
             return;
         }
         ChunkForcer cf = infinitum.getWorld().getForcer();
-        if(cf.isEnabled()) {
+        if(cf.isEnabled(key)) {
             infinitum.getI18n().sendMessage("command.cf.already_enabled", commandSender, dimension);
             return;
         }
-        cf.addChunk(world, Pos2D.flattenLocation(l2d));
+        Pos2D pos = Pos2D.flattenLocation(l2d);
+        cf.addChunk(world, pos);
+        infinitum.getI18n().sendMessage("command.cf.added", commandSender, key, pos);
     }
 }

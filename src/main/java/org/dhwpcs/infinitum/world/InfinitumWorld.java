@@ -14,12 +14,12 @@ public class InfinitumWorld {
     }
 
     public void initialize(ConfigurationSection world) {
-        ConfigurationSection forcer = world.getConfigurationSection("forcer");
+        ConfigurationSection forcer = world.getConfigurationSection("chunkforcer");
         this.forcer.fromConfig(forcer);
     }
 
     public void save(ConfigurationSection section) {
-        ConfigurationSection forcer = section.getConfigurationSection("forcer");
+        ConfigurationSection forcer = section.getConfigurationSection("chunkforcer");
         this.forcer.saveConfig(forcer);
     }
 }

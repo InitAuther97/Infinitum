@@ -68,11 +68,11 @@ public class Infinitum extends PaperShelledPlugin {
     @Override
     public void onLoad() {
         nugget = new NuggetLib();
-        CommandAPI.onLoad(new CommandAPIConfig().verboseOutput(false).silentLogs(false).useLatestNMSVersion(true));
     }
 
     @Override
     public void onEnable() {
+        CommandAPI.onLoad(new CommandAPIConfig().verboseOutput(false).silentLogs(false).useLatestNMSVersion(true));
         saveDefaultConfig();
         extractAssets();
         getLogger().info("Begin loading");
@@ -110,13 +110,19 @@ public class Infinitum extends PaperShelledPlugin {
 
     @Override
     public void onDisable() {
-        getLogger().info("Begin config saving");
         try {
+            getLogger().info("Begin disabling: statistics");
             statistics.save(getConfig().getConfigurationSection("statistics"));
+            getLogger().info("Begin disabling: world");
             world.save(getConfig().getConfigurationSection("world"));
+            getLogger().info("Begin saving mixin config");
             MixinConfig.save(getConfig().getConfigurationSection("mixin"));
+            getLogger().info("Begin disabling: network");
+            getLogger().info("This may take a few seconds, please wait...");
             network.stop();
+            getLogger().info("Begin saving config");
             saveConfig();
+            getLogger().info("Infinitum disabled!");
         } catch (IOException e) {
             e.printStackTrace();
         }

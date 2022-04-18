@@ -61,7 +61,7 @@ public abstract class RegularFileType<T> implements FileType<T> {
 
     @Override
     public VisitOperation createIfNotExist(FileManager manager, Path pth) throws IOException {
-        Files.createDirectory(pth);
+        Files.createDirectories(pth.getParent());
         Files.createFile(pth);
         return VisitOperation.CONTINUE;
     }

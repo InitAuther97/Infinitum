@@ -46,11 +46,13 @@ public record FormatTextEntry(TextEntry raw, List<TextEntry> entries) implements
             MatchResult[] results = matcher.results().toArray(MatchResult[]::new);
             int begin = 0;
             for(int i = 0; i < results.length; i++) {
-                parsed.add(Component.text(raw.substring(0, results[i].start())).style(style));
+                parsed.add(Component.text(raw.substring(begin, results[i].start())).style(style));
                 parsed.add(entries.get(i).get(lang, args));
-                begin = results[i].end() + 1;
+                begin = results[i].end();
             }
-            parsed.add(Component.text(raw.substring(begin)).style(style));
+            if(begin < results.length) {
+                parsed.add(Component.text(raw.substring(begin)).style(style));
+            }
         }
         return Component.text().append(parsed).build();
     }

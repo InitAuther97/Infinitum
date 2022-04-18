@@ -1,5 +1,6 @@
 package org.dhwpcs.infinitum.chat.tag;
 
+import org.dhwpcs.infinitum.chat.ChatContext;
 import org.dhwpcs.infinitum.chat.adventure.Translatable;
 
 public interface Parseable {

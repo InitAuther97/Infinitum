@@ -11,7 +11,7 @@ public class ComponentParser {
 
     static Map<String, TextEntry> parse(Map<String, Object> entries, DeserializationContext ctx) {
         Map<String, TextEntry> result = new HashMap<>(entries.size());
-        entries.entrySet().forEach(entry -> result.put(entry.getKey(), Deserializers.PLAIN_TEXT_ENTRY.deserialize(entry.getValue(), ctx)));
+        entries.forEach((key, value) -> result.put(key, Deserializers.PLAIN_TEXT_ENTRY.deserialize(value, ctx)));
         return result;
     }
 

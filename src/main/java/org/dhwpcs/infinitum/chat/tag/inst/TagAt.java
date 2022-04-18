@@ -4,7 +4,7 @@ import net.kyori.adventure.sound.Sound;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.dhwpcs.infinitum.chat.adventure.Translatable;
-import org.dhwpcs.infinitum.chat.tag.ChatContext;
+import org.dhwpcs.infinitum.chat.ChatContext;
 import org.dhwpcs.infinitum.chat.tag.ChatTag;
 import org.dhwpcs.infinitum.chat.tag.arguments.ArgumentPlayer;
 import org.dhwpcs.infinitum.chat.tag.parse.TagFailedException;

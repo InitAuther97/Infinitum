@@ -26,7 +26,7 @@ public class CommandChatCopy implements PlayerCommandExecutor {
     public void run(Player player, Object[] objects) throws WrapperCommandSyntaxException {
         Message msg = infinitum.getChat().getGlobal().getMessageLocal().get(player);
         if(msg == null) {
-            infinitum.getI18n().sendMessage("command.chat.copy.not_set", player);
+            infinitum.getI18n().sendMessage("command.chat.id.not_set", player);
         } else if(msg.message() instanceof TextComponent it) {
             infinitum.getI18n().sendMessage("command.chat.copy.button", player, it.content());
         } else {

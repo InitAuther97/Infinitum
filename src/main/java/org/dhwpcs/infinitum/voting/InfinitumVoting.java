@@ -1,5 +1,6 @@
 package org.dhwpcs.infinitum.voting;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.dhwpcs.infinitum.Infinitum;
 import org.dhwpcs.infinitum.voting.callback.IVoteCallback;
@@ -27,6 +28,7 @@ public class InfinitumVoting {
 
     public void initialize(ConfigurationSection section) {
         opAbD = section.getBoolean("vote_op_absolute_disagreement",  false);
+        Bukkit.getScheduler().runTaskTimer(infinitum, ticking_interface, 0, 0);
     }
 
     public void write(ConfigurationSection section) {

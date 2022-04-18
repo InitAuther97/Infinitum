@@ -7,6 +7,7 @@ import io.github.initauther97.nugget.adventure.SupportedLang;
 import io.github.initauther97.nugget.adventure.text.TextEntry;
 import io.github.initauther97.nugget.adventure.text.TranslateTextEntry;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -21,34 +22,34 @@ import java.util.UUID;
 
 public class I18n {
 
-    public AdventureWrapper TEXTS;
+    public AdventureWrapper wrapper;
     public final Component INF_PREFIX = Component.text("[DHW INF]");
     private Map<UUID, SupportedLang> langs;
     private SupportedLang console_lang;
     private boolean initialized = false;
 
     public Component format(String entry, CommandSender receiver, Object... args) {
-        return TEXTS.format(entry, receiver, args);
+        return wrapper.format(entry, receiver, args);
     }
 
     public Component format(String entry, SupportedLang lang, Object... args) {
-        return TEXTS.format(entry, lang, args);
+        return wrapper.format(entry, lang, args);
     }
 
     public TextEntry get(String entry) {
-        return TEXTS.get(entry);
+        return wrapper.get(entry);
     }
 
     public TranslateTextEntry translate(String name) {
-        return ComponentParser.translate(name, TEXTS);
+        return ComponentParser.translate(name, wrapper);
     }
 
-    public void broadcast(Server s, String entry, Object... args) {
-        s.getOnlinePlayers().forEach(p -> p.sendMessage(INF_PREFIX.append(TEXTS.format(entry, p, args))));
+    public void broadcast(String entry, Object... args) {
+        Bukkit.getServer().getOnlinePlayers().forEach(p -> p.sendMessage(INF_PREFIX.append(wrapper.format(entry, p, args))));
     }
 
     public void sendMessage(String entry, CommandSender receiver, Object... args) {
-        receiver.sendMessage(INF_PREFIX.append(TEXTS.format(entry, receiver, args)));
+        receiver.sendMessage(INF_PREFIX.append(wrapper.format(entry, receiver, args)));
     }
 
     public boolean setLanguage(CommandSender sender, SupportedLang lang) {
@@ -84,14 +85,15 @@ public class I18n {
             return;
         }
         initialized = true;
-        TEXTS = lib.createAdventureWrapper(root);
+        wrapper = lib.createAdventureWrapper(root);
         ConfigurationSection section = i18n.getConfigurationSection("players");
         langs = new HashMap<>();
         for(String key : section.getKeys(false)) {
             String value = section.getString(key);
             langs.put(UUID.fromString(key), SupportedLang.getOrDefault(value, SupportedLang.EN_US));
         }
-        console_lang = SupportedLang.getOrDefault(section.getString("console"), SupportedLang.EN_US);
-        TEXTS.setLangPrefs(langs::get, ()->console_lang);
+        System.out.println(langs);
+        console_lang = SupportedLang.getOrDefault(i18n.getString("console"), SupportedLang.EN_US);
+        wrapper.setLangPrefs(uid -> langs.getOrDefault(uid, SupportedLang.EN_US), ()->console_lang);
     }
 }

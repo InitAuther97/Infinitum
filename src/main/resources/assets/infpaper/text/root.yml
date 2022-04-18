@@ -99,38 +99,185 @@ command.vote.info: #[player,vote_id,vote_desc,vote_uid]
             arguments:
               - argument: 3
 
-command.acknowledge: #[version]
-  value:
-    - format:
-        raw:
-          translate: command.acknowledge.1
-        arguments:
-          - argument: 0
-    - "\n"
-    - translate: command.acknowledge.2
-    - "\n"
-    - translate: command.acknowledge.3
-    - "\n"
-    - translate: command.acknowledge.4
+command.acknowledge.1: #[version]
+  format:
+    raw:
+      translate: command.acknowledge.1
+    arguments:
+      - argument: 0
 
-command.vote.usage: "/aikarisgod vote create/participate ..."
-command.vote.creage.usage: "/aikarisgod vote create <voteid> [duration]"
-command.vote.participate.usage: "/aikarisgod vote participate <voteid> <...>"
+command.acknowledge.2:
+  translate: command.acknowledge.2
+
+command.acknowledge.3:
+  translate: command.acknowledge.3
+
+command.acknowledge.4:
+  translate: command.acknowledge.4
+
+command.vote.usage: "/infinitum vote create/participate ..."
+command.vote.creage.usage: "/infinitum vote create <voteid> [duration]"
+command.vote.participate.usage: "/infinitum vote participate <voteid> <...>"
 
 command.lang.success:
   translate: 'command.lang.success'
-
+  
 command.lang.incorrect_argument: #[input, required]
   color: RED
-  value:
-    - argument: 0
-    - translate: 'command.lang.incorrect_argument'
-    - argument: 1
+  format:
+    raw:
+      translate: 'command.lang.incorrect_argument'
+    arguments: 
+      - argument: 0
+      - argument: 1
+
+command.cf.illegal_dim: #[dim]
+  color: RED
+  format:
+    raw:
+      translate: 'command.cf.illegal_dim'
+    arguments:
+      - argument: 0
+
+command.cf.already_enabled: #[dim]
+  color: RED
+  format:
+    raw:
+      translate: 'command.cf.already_enabled'
+    arguments:
+      - argument: 0
+
+command.cf.added: #[key, pos]
+  format:
+    raw:
+      translate: 'command.cf.added'
+    arguments:
+      - argument: 0
+      - argument: 1
+
+command.cf.removed: #[key, pos]
+  format:
+    raw:
+      translate: 'command.cf.removed'
+    arguments:
+      - argument: 0
+      - argument: 1
+
+command.cf.not_enabled: #[dim]
+  color: RED
+  format:
+    raw:
+      translate: 'command.cf.not_enabled'
+    arguments:
+      - argument: 0
+
+command.cf.disable: #[dim]
+  format:
+    raw:
+      translate: 'command.cf.disable'
+    arguments:
+      - argument: 0
+
+command.cf.skip: #[chunk]
+  format:
+    raw:
+      translate: 'command.cf.skip'
+    arguments:
+      - argument: 0
+
+command.cf.unforce_failed: #[chunk]
+  color: RED
+  format:
+    raw:
+      translate: 'command.cf.unforce_failed'
+    arguments:
+      - argument: 0
+
+command.cf.disable_success: #[dim]
+  format:
+    raw:
+      translate: 'command.cf.disable_success'
+    arguments:
+      - argument: 0
+
+command.cf.enabled: #[dim]
+  color: RED
+  format:
+    raw:
+      translate: 'command.cf.enabled'
+    arguments:
+      - argument: 0
+
+command.cf.enable: #[dim]
+  format:
+    raw:
+      translate: 'command.cf.enable'
+    arguments:
+      - argument: 0
+
+command.cf.duplicate: #[chunk]
+  color: RED
+  format:
+    raw:
+      translate: 'command.cf.duplicate'
+    arguments:
+      - argument: 0
+
+command.cf.enable_success: #[dim]
+  format:
+    raw:
+      translate: 'command.cf.enable_success'
+    arguments:
+      - argument: 0
+
+command.chat.id.illegal: #[id]
+  color: RED
+  format:
+    raw:
+      translate: 'command.chat.id.illegal'
+    arguments:
+      - argument: 0
+
+command.chat.id.set:
+  translate: 'command.chat.id.set'
+
+command.chat.id.not_set:
+  color: RED
+  translate: 'command.chat.id.not_set'
+
+command.chat.copy.button: #[content]
+  color: GREEN
+  translate: 'command.chat.copy.button'
+  click_event:
+    action: COPY_TO_CLIPBOARD
+    value:
+      - argument: 0
+
+command.chat.copy.unsupported_type:
+  color: RED
+  translate: 'command.chat.copy.unsupported_type'
+
+command.config.undefined: #[entry]
+  color: RED
+  format:
+    raw:
+      translate: 'command.config.undefined'
+    arguments:
+      - argument: 0
+
+command.config.success: #[entry, value]
+  format:
+    raw:
+      translate: 'command.config.success'
+    arguments:
+      - argument: 0
+      - argument: 1
 
 chat.reply: #[msg_sender,time,content]
   color: GREEN
   format:
-    raw: chat.reply.reply
+    raw:
+      translate: 'chat.reply.reply'
     arguments:
       - argument: 0
   hover_event:
@@ -138,7 +285,7 @@ chat.reply: #[msg_sender,time,content]
     text:
       format:
         raw:
-          translate: chat.reply.info
+          translate: 'chat.reply.info'
         arguments:
           - argument: 1
           - argument: 2
@@ -161,7 +308,7 @@ chat.tag.info: #[tag_name,parameter_list,attributes]
   color: AQUA
   format:
     raw:
-      translate: chat.tag.info
+      translate: 'chat.tag.info'
     arguments:
       - argument: 0
   hover_event:
@@ -169,7 +316,17 @@ chat.tag.info: #[tag_name,parameter_list,attributes]
     text:
       format:
         raw:
-          translate: chat.tag.info.detail
+          translate: 'chat.tag.info.detail'
         arguments:
           - argument: 1
           - argument: 2
+
+chat.info: #[sender, time, content]
+  format:
+    raw:
+      translate: 'chat.info'
+    arguments:
+      - argument: 0
+      - argument: 1
+      - argument: 2
+

@@ -1,4 +1,4 @@
-package org.dhwpcs.infinitum.chat.tag;
+package org.dhwpcs.infinitum.chat;
 
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ChatContext {
-    private final Set<Runnable> afterTasks = new HashSet<>();
+    final Set<Runnable> afterTasks = new HashSet<>();
     private final CommandSender sender;
     private final String raw;
     private final Infinitum infinitum;

@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.dhwpcs.infinitum.chat.adventure.Translatable;
 import org.dhwpcs.infinitum.chat.data.Message;
-import org.dhwpcs.infinitum.chat.tag.ChatContext;
 import org.dhwpcs.infinitum.chat.tag.parse.TagFailedException;
 import org.dhwpcs.infinitum.Infinitum;
 
@@ -35,23 +34,17 @@ public class ChatRendererInf implements ChatRenderer {
     @Override
     public Component render(Player source, Component nameOfSource, Component message, Audience receiver) {
         Component name = nameOfSource
-                .clickEvent(ClickEvent.copyToClipboard(String.format("#{@:%s}", nameOfSource)));
-        message.clickEvent(ClickEvent.copyToClipboard(String.format("#{reply:%s}", nameOfSource)));
+                .clickEvent(ClickEvent.copyToClipboard(String.format("{@:%s}", nameOfSource)));
+        message.clickEvent(ClickEvent.copyToClipboard(String.format("{reply:%s}", nameOfSource)));
+        System.out.println(message);
         if(message instanceof TextComponent component) {
             ChatContext ctx = new ChatContext(source, component, infinitum, global);
             TextComponent parsed;
             if(component.content().startsWith(global.getWholeEscape())){
                 parsed = component.content(component.content().substring(2));
             } else {
-                Collection<Tuple<UUID, Translatable>> cacheds = cache.get(component.content());
-                Translatable tr = null;
-                for(Tuple<UUID, Translatable> c : cacheds) {
-                    if(c.first().equals(source.getUniqueId())) {
-                        tr = c.second();
-                    }
-                }
-
-                if(tr == null)  try {
+                Translatable tr;
+                try {
                     tr = global.getParser().parse(ctx);
                     cache.put(component.content(), new Tuple<>(source.getUniqueId(), tr));
                 } catch (TagFailedException e) {
@@ -62,6 +55,7 @@ public class ChatRendererInf implements ChatRenderer {
                 }
 
                 parsed = tr.translate(receiver instanceof CommandSender ? infinitum.getI18n().getLanguage((CommandSender) receiver) : SupportedLang.EN_US);
+                afterActions.addAll(ctx.afterTasks);
             }
             global.getHistory().appendMessage(new Message.Builder()
                     .uid(source.getUniqueId())

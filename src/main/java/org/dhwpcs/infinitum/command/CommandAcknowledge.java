@@ -23,6 +23,9 @@ public class CommandAcknowledge implements CommandExecutor {
 
     @Override
     public void run(CommandSender sender, Object[] objects) {
-        infinitum.getI18n().sendMessage("command.acknowledge", sender, Infinitum.version());
+        infinitum.getI18n().sendMessage("command.acknowledge.1", sender, Infinitum.version());
+        infinitum.getI18n().sendMessage("command.acknowledge.2", sender);
+        infinitum.getI18n().sendMessage("command.acknowledge.3", sender);
+        infinitum.getI18n().sendMessage("command.acknowledge.4", sender);
     }
 }

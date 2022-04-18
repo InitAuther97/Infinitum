@@ -22,7 +22,7 @@ public class VoteIncorrectTntAccel implements IVoteEntry {
 
     @Override
     public TextEntry getDescription() {
-        return infinitum.getI18n().translate("vote.tnt_accel.disable.desc");
+        return infinitum.getI18n().translate("vote.uncorrect_tnt_accel.desc");
     }
 
     @Override

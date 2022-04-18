@@ -5,6 +5,7 @@ import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.executors.PlayerCommandExecutor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.dhwpcs.infinitum.i18n.I18n;
@@ -55,14 +56,12 @@ public class CommandVoteCreate implements PlayerCommandExecutor {
             case SUCCESS -> {
                 Vote vote = (Vote) result.result()[0];
                 i18n.sendMessage("command.vote.create.success", sender);
-                for (Player player : sender.getServer().getOnlinePlayers()) {
-                    i18n.sendMessage("command.vote.info", player,
-                            sender.getName(),
-                            vote.getEntry().getVoteId(),
-                            vote.getEntry().getDescription(),
-                            vote.getUid().toString()
-                    );
-                }
+                i18n.broadcast("command.vote.info",
+                        sender.getName(),
+                        vote.getEntry().getVoteId(),
+                        vote.getEntry().getDescription(),
+                        vote.getUid().toString()
+                );
             }
             case INCORRECT_ARGUMENT -> i18n.sendMessage("command.vote.create.incorrect_argument", sender);
             case ALREADY_ONGOING -> {

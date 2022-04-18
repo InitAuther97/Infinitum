@@ -47,10 +47,11 @@ public class CommandForcerRemove implements CommandExecutor {
             return;
         }
         ChunkForcer cf = infinitum.getWorld().getForcer();
-        if(cf.isEnabled()) {
+        if(cf.isEnabled(key)) {
             infinitum.getI18n().sendMessage("command.cf.already_enabled", commandSender, key);
             return;
         }
         cf.addChunk(world, pos);
+        infinitum.getI18n().sendMessage("command.cf.removed", commandSender, key, pos);
     }
 }

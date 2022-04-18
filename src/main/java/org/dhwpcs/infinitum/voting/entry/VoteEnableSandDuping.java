@@ -23,7 +23,7 @@ public class VoteEnableSandDuping implements IVoteEntry {
 
     @Override
     public TextEntry getDescription() {
-        return infinitum.getI18n().translate("vote.sand_duping.enable.desc");
+        return infinitum.getI18n().translate("vote.enable_sand_duping.desc");
     }
 
     @Override

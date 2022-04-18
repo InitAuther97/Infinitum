@@ -31,9 +31,13 @@ public class CommandChatInfo implements PlayerCommandExecutor {
     @Override
     public void run(Player player, Object[] objects) throws WrapperCommandSyntaxException {
         Message msg = infinitum.getChat().getGlobal().getMessageLocal().get(player);
-        OfflinePlayer op = Bukkit.getOfflinePlayer(msg.sender());
-        Component sender = !op.hasPlayedBefore() ? Component.text("UNKNOWN SENDER").color(NamedTextColor.RED) : Component.text(op.getName());
-        Temporal time = msg.timeAsTemporal();
-        infinitum.getI18n().sendMessage("chat.info", player, sender, Global.FORMATTER.format(time), msg.message());
+        if(msg == null) {
+            infinitum.getI18n().sendMessage("command.chat.id.not_set", player);
+        } else {
+            OfflinePlayer op = Bukkit.getOfflinePlayer(msg.sender());
+            Component sender = !op.hasPlayedBefore() ? Component.text("[UNKNOWN SENDER]").color(NamedTextColor.RED) : Component.text(op.getName());
+            Temporal time = msg.timeAsTemporal();
+            infinitum.getI18n().sendMessage("chat.info", player, sender, Global.FORMATTER.format(time), msg.message());
+        }
     }
 }

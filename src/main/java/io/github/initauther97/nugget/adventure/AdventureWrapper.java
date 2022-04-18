@@ -2,6 +2,9 @@ package io.github.initauther97.nugget.adventure;
 
 import io.github.initauther97.nugget.adventure.serial.DeserializationContext;
 import io.github.initauther97.nugget.adventure.text.TextEntry;
+import io.github.initauther97.nugget.file.FileManager;
+import io.github.initauther97.nugget.file.type.FolderType;
+import io.github.initauther97.nugget.file.type.RegularFileType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -10,7 +13,6 @@ import org.bukkit.plugin.Plugin;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.Locale;
@@ -29,15 +31,17 @@ public class AdventureWrapper {
 
     public AdventureWrapper(Path root) {
         try {
+            FileManager manager = new FileManager(root);
             Yaml cfg = new Yaml();
-            Map<String, Object> result = cfg.load(Files.newBufferedReader(root.resolve("root.yml")));
-            Path langRoot = root.resolve("lang");
+            Map<String, Object> result = cfg.load(manager.visit(RegularFileType.INPUT_READER, "root.yml"));
+            FileManager langRoot = manager.visit(FolderType.MANAGER, "lang");
             i18n = new EnumMap<>(SupportedLang.class);
             for (SupportedLang lang : SupportedLang.values()) {
-                i18n.put(lang, cfg.load(Files.newBufferedReader(langRoot.resolve(lang.name().toLowerCase(Locale.ROOT) + ".yml"))));
+                i18n.put(lang, cfg.load(langRoot.visit(RegularFileType.INPUT_READER, lang.name().toLowerCase(Locale.ROOT) + ".yml")));
             }
             context = new DeserializationContext(i18n);
             allComponents = ComponentParser.parse(result, context);
+            allComponents.forEach((k, v) -> System.out.println(k));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

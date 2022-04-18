@@ -1,6 +1,6 @@
 package org.dhwpcs.infinitum.chat.tag.arguments;
 
-import org.dhwpcs.infinitum.chat.tag.ChatContext;
+import org.dhwpcs.infinitum.chat.ChatContext;
 import org.dhwpcs.infinitum.chat.tag.parse.TagFailedException;
 import org.dhwpcs.infinitum.chat.tag.parse.argument.TagContext;
 

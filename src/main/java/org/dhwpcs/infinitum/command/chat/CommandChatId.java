@@ -13,7 +13,6 @@ public class CommandChatId implements PlayerCommandExecutor {
     private final Infinitum infinitum;
 
     public CommandChatId(Infinitum infinitum) {
-
         this.infinitum = infinitum;
     }
 

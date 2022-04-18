@@ -28,7 +28,6 @@ public abstract class DeserializerTextEntry<T extends TextEntry> implements Dese
             TextColor color = (TextColor) value.computeIfPresent("color",
                     (k, v) -> Deserializers.textColor(v, ctx));
             TextEntry delegate;
-            System.out.println(value);
             boolean isTranslation = value.containsKey("translate");
             boolean isArgument = value.containsKey("argument");
             boolean isComplex = value.containsKey("value");

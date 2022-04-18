@@ -2,7 +2,7 @@ package org.dhwpcs.infinitum.chat.tag.parse;
 
 import org.dhwpcs.infinitum.chat.adventure.JoinedTranslatable;
 import org.dhwpcs.infinitum.chat.adventure.Translatable;
-import org.dhwpcs.infinitum.chat.tag.ChatContext;
+import org.dhwpcs.infinitum.chat.ChatContext;
 import org.dhwpcs.infinitum.chat.tag.ChatTag;
 import org.dhwpcs.infinitum.chat.tag.TagInstance;
 import org.dhwpcs.infinitum.chat.tag.parse.argument.TagContext;

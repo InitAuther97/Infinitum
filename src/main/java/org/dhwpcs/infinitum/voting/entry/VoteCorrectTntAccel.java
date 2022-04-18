@@ -21,7 +21,7 @@ public class VoteCorrectTntAccel implements IVoteEntry {
 
     @Override
     public TextEntry getDescription() {
-        return infinitum.getI18n().translate("vote.entry.correct_tnt_accel.desc");
+        return infinitum.getI18n().translate("vote.correct_tnt_accel.desc");
     }
 
     @Override

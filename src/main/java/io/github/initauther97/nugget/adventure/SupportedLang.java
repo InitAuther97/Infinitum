@@ -30,10 +30,12 @@ public enum SupportedLang {
     }
 
     public static SupportedLang getOrDefault(String lang, SupportedLang def) {
-        return switch (lang) {
-            case "ZH_CN" -> ZH_CN;
-            case "EN_US" -> EN_US;
-            default -> def;
-        };
+        if(lang != null) {
+            return switch (lang) {
+                case "ZH_CN" -> ZH_CN;
+                case "EN_US" -> EN_US;
+                default -> def;
+            };
+        } else return EN_US;
     }
 }

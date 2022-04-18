@@ -15,7 +15,7 @@ def releaseVersion = version = '1.0-RC1'
 group 'initauther97'
 
 paperShelled {
-    jarUrl = 'https://papermc.io/api/v2/projects/paper/versions/1.18.1/builds/175/downloads/paper-1.18.1-175.jar'
+    jarUrl = 'https://papermc.io/api/v2/projects/paper/versions/1.18.2/builds/287/downloads/paper-1.18.2-287.jar'
     relocateCraftBukkit = true
 }
 
@@ -23,7 +23,6 @@ dependencies {
     compileOnly paperShelled.jar()
     compileOnly 'org.ow2.asm:asm:9.2'
     compileOnly "dev.jorel.CommandAPI:commandapi-shade:7.0.0"
-    runtimeClasspath "dev.jorel.CommandAPI:commandapi-shade:7.0.0"
     compileOnly fileTree(dir: 'lib', include: '*.jar')
 }
 
@@ -35,7 +34,7 @@ shadowJar {
     minimize()
     
     filesMatching('Infinitum.java') {
-        filter { String
+        filter { it
             it.replaceAll('RELEASE_VERSION', releaseVersion)
         }
     }
