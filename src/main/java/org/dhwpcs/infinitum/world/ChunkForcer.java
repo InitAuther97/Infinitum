@@ -59,6 +59,7 @@ public class ChunkForcer {
                 skip.put(asKey(lvl), p);
             }
         }
+        enabled.add(lvl.getKey());
         instance.getI18n().sendMessage("command.cf.enable_success", sender, lvl.getKey());
     }
 
@@ -74,7 +75,7 @@ public class ChunkForcer {
 
     public void disable(CommandSender sender, World lvl) {
         if(!enabled.contains(lvl.getKey())) {
-            instance.getI18n().sendMessage("command.cf.not_enabled", sender);
+            instance.getI18n().sendMessage("command.cf.not_enabled", sender, lvl.getKey());
             return;
         }
         instance.getI18n().broadcast("command.cf.disable", asKey(lvl));

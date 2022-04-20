@@ -86,7 +86,7 @@ command.vote.info: #[player,vote_id,vote_desc,vote_uid]
         action: RUN_COMMAND
         value:
           format:
-            raw: "/infpaper vote participate {} accept"
+            raw: "/infinitum vote participate {} accept"
             arguments:
               - argument: 3
     - translate: command.vote.info.reject
@@ -95,7 +95,7 @@ command.vote.info: #[player,vote_id,vote_desc,vote_uid]
         action: RUN_COMMAND
         value:
           format:
-            raw: "/infpaper vote participate {} reject"
+            raw: "/infinitum vote participate {} reject"
             arguments:
               - argument: 3
 

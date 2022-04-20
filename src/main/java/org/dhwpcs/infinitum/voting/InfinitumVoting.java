@@ -13,7 +13,6 @@ public class InfinitumVoting {
     private final Set<IVoteEntry> entries = new HashSet<>();
     public final Runnable ticking_interface = this::tick;
 
-    private final Map<String, Object> memory = new HashMap<>();
     private final Infinitum infinitum;
 
     boolean opAbD;

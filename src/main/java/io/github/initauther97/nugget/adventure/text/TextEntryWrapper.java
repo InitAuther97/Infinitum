@@ -15,17 +15,17 @@ public record TextEntryWrapper(TextEntry delegate, Set<TextDecoration> decoratio
     public TextComponent get(SupportedLang lang, Object... args) {
         TextComponent result = delegate.get(lang, args);
         if (hoverEvent != null) {
-            result.hoverEvent(hoverEvent.get(lang, args));
+            result = result.hoverEvent(hoverEvent.get(lang, args));
         }
         if (clickEvent != null) {
-            result.clickEvent(clickEvent.get(lang, args));
+            result = result.clickEvent(clickEvent.get(lang, args));
         }
         if (color != null) {
-            result.color(color.get(lang, args));
+            result = result.color(color.get(lang, args));
         }
         if (decorations != null) {
             for (TextDecoration decoration : decorations) {
-                result.decoration(decoration.get(lang, args), net.kyori.adventure.text.format.TextDecoration.State.TRUE);
+                result = result.decoration(decoration.get(lang, args), net.kyori.adventure.text.format.TextDecoration.State.TRUE);
             }
         }
         return result;

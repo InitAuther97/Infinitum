@@ -1,6 +1,7 @@
 package io.github.initauther97.nugget.adventure.text;
 
 import io.github.initauther97.nugget.adventure.SupportedLang;
+import io.github.initauther97.nugget.adventure.util.ComponentUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.Style;
@@ -18,7 +19,7 @@ public record FormatTextEntry(TextEntry raw, List<TextEntry> entries) implements
     public TextComponent get(SupportedLang lang, Object... args) {
         TextComponent component = raw.get(lang, args);
         Style style = component.style();
-        String raw = component.content();
+        String raw = ComponentUtils.extractContent(component);
         List<Component> parsed = new LinkedList<>();
         /*{
             char[] chars = raw.toCharArray();
@@ -41,19 +42,18 @@ public record FormatTextEntry(TextEntry raw, List<TextEntry> entries) implements
                 }
             }
         }*/
-        {
-            Matcher matcher = ARGUMENT.matcher(raw);
-            MatchResult[] results = matcher.results().toArray(MatchResult[]::new);
-            int begin = 0;
-            for(int i = 0; i < results.length; i++) {
-                parsed.add(Component.text(raw.substring(begin, results[i].start())).style(style));
-                parsed.add(entries.get(i).get(lang, args));
-                begin = results[i].end();
-            }
-            if(begin < results.length) {
-                parsed.add(Component.text(raw.substring(begin)).style(style));
-            }
+        Matcher matcher = ARGUMENT.matcher(raw);
+        MatchResult[] results = matcher.results().toArray(MatchResult[]::new);
+        StringBuilder sb = new StringBuilder();
+        int begin = 0;
+        for(int i = 0; i < results.length; i++) {
+            sb.append(raw, begin, results[i].start());
+            sb.append(entries.get(i).get(lang, args).content());
+            begin = results[i].end();
         }
-        return Component.text().append(parsed).build();
+        if(begin < raw.length()) {
+            sb.append(raw.substring(begin));
+        }
+        return Component.text(sb.toString()).style(component.style());
     }
 }

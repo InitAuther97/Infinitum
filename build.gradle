@@ -28,13 +28,15 @@ dependencies {
 
 shadowJar {
     dependencies {
-        relocate('org.bukkit.craftbukkit', 'org.bukkit.craftbukkit.' + paperShelled.craftBukkitVersion.get())
+        relocate('org.bukkit.craftbukkit', 'org.bukkit.craftbukkit.' + paperShelled.craftBukkitVersion.get()) {
+            exclude 'org.bukkit.craftbukkit.v1_*.**'
+        }
     }
     archiveClassifier.set('')
     minimize()
     
     filesMatching('Infinitum.java') {
-        filter { it
+        filter {
             it.replaceAll('RELEASE_VERSION', releaseVersion)
         }
     }

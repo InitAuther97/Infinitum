@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.util.HSVLike;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public record TextColor(Object value) implements AdventureObject<net.kyori.adventure.text.format.TextColor> {
@@ -33,6 +34,6 @@ public record TextColor(Object value) implements AdventureObject<net.kyori.adven
             }
 
             throw new IllegalArgumentException();
-        } else return NamedTextColor.NAMES.value(value.toString());
+        } else return NamedTextColor.NAMES.value(value.toString().toLowerCase(Locale.ROOT));
     }
 }
