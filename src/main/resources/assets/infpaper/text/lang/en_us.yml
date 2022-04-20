@@ -12,7 +12,7 @@ command.vote.result: "vote finished.The result is:{}"
 command.vote.result.accept: "ACCEPTED"
 command.vote.result.denied: "DENIED"
 
-command.vote.info: "{} is voting {}."
+command.vote.info: '{} is voting "{}".'
 command.vote.info.accept: "[ACCEPT]"
 command.vote.info.reject: "[DENY]"
 

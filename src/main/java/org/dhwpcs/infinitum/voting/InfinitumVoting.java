@@ -27,7 +27,7 @@ public class InfinitumVoting {
 
     public void initialize(ConfigurationSection section) {
         opAbD = section.getBoolean("vote_op_absolute_disagreement",  false);
-        Bukkit.getScheduler().runTaskTimer(infinitum, ticking_interface, 0, 0);
+        Bukkit.getScheduler().runTaskTimer(infinitum, ticking_interface, 0, 1000);
     }
 
     public void write(ConfigurationSection section) {

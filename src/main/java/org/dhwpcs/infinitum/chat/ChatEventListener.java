@@ -18,6 +18,7 @@ public class ChatEventListener implements Listener {
 
     @EventHandler
     public void onChatMessage(AsyncChatEvent event) {
+        plugin.getLogger().info("Triggering paper async chat event!");
         event.renderer(renderer);
         Bukkit.getScheduler().runTaskLater(plugin, renderer.afterTask(), 50);
     }

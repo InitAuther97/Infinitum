@@ -56,7 +56,7 @@ public class I18n {
         if (sender instanceof ConsoleCommandSender) {
             console_lang = lang;
         } else if (sender instanceof Player p) {
-            langs.put(p.getUniqueId(), SupportedLang.EN_US);
+            langs.put(p.getUniqueId(), lang);
         } else {
             return false;
         }

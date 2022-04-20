@@ -38,8 +38,7 @@ public class CommandVoteParticipate implements PlayerCommandExecutor {
         if (args == null) {
             return;
         }
-        UUID uid = (UUID) args[0];
-        VoteParticipatingResult result = infinitum.getVoting().vote(sender.toString(), (UUID) args[0], (VoteType) args[1], sender.isOp());
+        VoteParticipatingResult result = infinitum.getVoting().vote(sender.toString(), (UUID) args[0], VoteType.fromString((String) args[1]), sender.isOp());
         infinitum.getI18n().sendMessage(switch (result.type()) {
             case SUCCESS -> "command.vote.participate.success";
             case ALREADY_VOTED -> "command.vote.participate.already_voted";

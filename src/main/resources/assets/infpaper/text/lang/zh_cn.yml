@@ -26,7 +26,7 @@ command.cf.enable: "正在于维度 {} 启动区块加载器"
 command.cf.duplicate: "区块 {} 已经在强制加载中！它将不会被加载器强制加载"
 command.cf.enable_success: "成功于维度 {} 中关闭了区块加载器"
 
-command.vote.info: "{} 发起一项关于 {} 的投票."
+command.vote.info: '{} 发起一项关于 "{}" 的投票.'
 command.vote.info.accept: "[同意]"
 command.vote.info.reject: "[否决]"
 
